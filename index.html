@@ -9,20 +9,9 @@
   <script src="http://d3js.org/topojson.v1.min.js"></script>
 	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.3"></script>
 
-  /trying to change brightness with slider, did not work
   <div id='map' class="map"></div>
 
-  //slider
-  <input id="slide" type="range" min="0" max="1" step="0.1" value="0.5" onchange="updateOpacity(this.value)">
-
-  <div id="popover-content" class="hide">
-    <div>
-      Opacity: <input type="text" class="span2" value="50" id="rangeSlider" data-slider-min="10" data-slider-max="100" data-slider-step='5'>
-    </div>
-  </diWv>
-
   <script>
-
     const descr1 = ".335-.999 mm",
           descr2 = "1.00-4.75 mm",
           desc3 = "4.75-200 mm",
@@ -82,18 +71,10 @@
     attributionControl: false
   }).setView([0, 0], 3);
 
-	var mapquestUrl = 'http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
-  subDomains = ['otile1','otile2','otile3','otile4'];
-  mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 10, subdomains: subDomains});
   stamen = new L.StamenTileLayer("watercolor");
 
 
   map.addLayer(stamen);
-  map.addLayer(mapquest);
-  var positronLabels = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
-    attribution: '�OpenStreetMap, �CartoDB',
-    pane: 'labels'
-  }).addTo(map);
 
 	L.control.attribution({position: 'bottomright'})
            .addAttribution("&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a>, <a href='http://maps.stamen.com'>Stamen</a>, <a href='http://maquest.com'>MapQuest</a>")
