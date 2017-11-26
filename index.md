@@ -11,4 +11,4 @@ A simple walk on any beach, anywhere, and the plastic waste is present. Tons of 
 
 There are two separate datasets on marine plastic pollution dynamics. First one describes density of different "plastics" [plastic peaces of different size] at certain geographical location at a particular time point. Second data set is a collection of .csv files. One .csv file represents the spreading of plastic waste from referent geographical location. E.g. if a peace of plastic was thrown on the cost of China, we can follow its path in the seas over time. 
 
-**Data set we use can be found on the link**: https://drive.google.com/file/d/0B_ZTyddAA2xLdFFMMVdNb0h5T0E/view?usp=sharing
+**Data set we use can be found on the link**: [Data] (https://drive.google.com/file/d/0B_ZTyddAA2xLdFFMMVdNb0h5T0E/view?usp=sharing)
