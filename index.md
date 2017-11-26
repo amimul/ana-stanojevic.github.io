@@ -11,3 +11,5 @@ There are two separate datasets on marine plastic pollution dynamics. First one 
 **Data set we use can be found on the link: https://drive.google.com/file/d/0B_ZTyddAA2xLdFFMMVdNb0h5T0E/view?usp=sharing**
 
 **Link to visuzalization**: [**MAP**](map.html)
+
+**Link to Process book**: [**Process book**](DV_process_book.pdf)
