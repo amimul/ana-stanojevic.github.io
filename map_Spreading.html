@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<meta charset="utf-8"
+      name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+  <link rel="stylesheet" href="src/map.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+  <script src="https://d3js.org/topojson.v1.min.js"></script>
+	<script type="text/javascript" src="https://rawgit.com/stamen/maps.stamen.com/master/js/tile.stamen.js"></script>
+  <div id="radiobuttons">
+    <script type="text/javascript" src="add_radiobuttons.js"></script> </div>
+
+  <div id='map' class="map"></div>
+
+  <script>
+  const spreading_data_dir = "data/spreading/"
+  const edges_csv = "data/spreading/spreading_tree_edges.csv"
+  const nodes_csv = "data/spreading/spreading_tree_nodes.csv"
+  const start_lat = -11.0
+  const start_lng = 43.0
+
+  map = new L.map('map', {
+    attribution: 'attribution line',
+    attributionControl: false
+  }).setView([0, 0], 3);
+  stamen = new L.StamenTileLayer("watercolor");
+  map.addLayer(stamen);
+	L.control.attribution({position: 'bottomright'})
+           .addAttribution("&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a>, <a href='http://maps.stamen.com'>Stamen</a>, <a href='http://maquest.com'>MapQuest</a>")
+           .setPrefix("")
+           .addTo(map);
+
+  let svg = d3.select(map.getPanes().overlayPane).append("svg"),
+      _g = svg.append("g").attr("class", "leaflet-zoom-hide");
+  svg.attr("width", window.innerWidth);
+  svg.attr("height", window.innerHeight);
+
+  add_radiobuttons();
+  
+  function projectPoint(x, y) {
+    return map.latLngToLayerPoint(new L.LatLng(y, x));
+  }
+
+  let line = d3.line()
+               .curve(d3.curveLinear)
+               .x(function(d) {
+                  return projectPoint(long, 1).x; })
+               .y(function(d) {
+                  return projectPoint(1, lat).y; });
+
+  d3.csv(nodes_csv, processData);
+  function processData(data) {
+      _g.selectAll("circle")
+        .data(data).enter()
+        .append("circle")
+        .style("fill", "black")
+        .attr("r", 2)
+        .attr("cx", function(d){
+          return projectPoint(d.node_lng, 1).x
+        })
+        .attr("cy", function(d){
+          return projectPoint(1, d.node_lat).y
+        })
+      };
+      // _g.append("path")
+      //   .datum(data)
+      //   .attr("fill", "none")
+      //   .attr("stroke", "steelblue")
+      //   .attr("stroke-linejoin", "round")
+      //   .attr("stroke-linecap", "round")
+      //   .attr("stroke-width", 1.5)
+      //   .attr("d", line);
+  </script>
+</body>
