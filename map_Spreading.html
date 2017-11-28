@@ -50,7 +50,7 @@ html, body {
 
   var projection = d3.geoEquirectangular()
       .scale(default_scale)
-      .translate([width/2, height/2]);
+      .translate([width/2+30, height/2-10]);
 
   var path = d3.geoPath().pointRadius(5).projection(projection);
 
