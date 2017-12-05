@@ -317,39 +317,26 @@ html, body {
           initiateZoom();
 
           let _g = d3.select("g");
-          const edges_csv = "data/spreading/spreading_tree_edges.csv"
-          // const nodes_csv = "data/spreading/spreading_tree_nodes.csv"
-          // d3.csv(nodes_csv).get(function(error, rows) {
-          //   rows.forEach(function(d, i){
-          //       setTimeout(function(){
-          //           _g.append("circle")
-          //           .attr("class", "red")
-          //             .style("fill", "red")
-          //               .style("opacity", 1)
-          //               .attr("r", 4)
-          //               .attr("cx", projection([d.node_lng, d.node_lat])[0])
-          //               .attr("cy", projection([d.node_lng, d.node_lat])[1])
-          //               .transition()
-          //               .duration(10000)
-          //               .style("opacity", 0)
-          //               .remove()
-          //       }, parseInt(d.depth)*400 + i *100);
-          //        })});
-   let allButtonsSpread= _g.append("g").attr("id","spread_markers") 
-          let defaultColorSpread= "#FF6347"
-            let hoverColorSpread= "#800000"
-            let pressedColorSpread= "#8B0000"
+          const edges_folder= "data/spreading/edges/"
+          const nodes_folder= "data/spreading/nodes/"
+          spreading_locations = ["australia_melburne", 'china_japan', 'india', 'indonesia', 'mediterranean','near_spain', 'north_america_east', 'north_america_west', 'south_africa', 
+          'south_america', 'west_africa']
+          let allButtonsSpread= _g.append("g").attr("id","spread_markers") 
+          let defaultColorSpread= "#DC143C"
+            let hoverColorSpread= "#B22222"
+            let pressedColorSpread= "#FFFF00"
 
-  let buttonGroupsSpread= allButtonsSpread.selectAll("g.button")
-                                  .data([1])
+  let buttonGroupsSpread= allButtonsSpread.selectAll("g.spreading_button")
+                                  .data(spreading_locations)
                                   .enter()
                                   .append("g")
-                                  .attr("class","button")
+                                  .attr("id", function(d){return d})
+                                  .attr("class","spreading_button")
                                   .style("cursor","pointer")
                                   .on("click",function(d,i) {
                                       d3.select(this.parentNode).selectAll("circle").attr("fill",defaultColorSpread)
                                       d3.select(this).select("circle").attr("fill",pressedColorSpread)
-                                      d3.csv(edges_csv).get(function(error, rows) {
+                                      d3.csv(edges_folder+d+'_edges.csv').get(function(error, rows) {
                                       rows.forEach(function(d, i){
                                          setTimeout(function(){
                                           _g.append("line")
@@ -365,31 +352,32 @@ html, body {
                                             .style("opacity", 0)
                                             .remove()
                                           }, parseInt(d.depth)*400 + i *100);
-                                        })});
-
-                                              })
-                                              .on("mouseover", function() {
-                                                  if (d3.select(this).select("circle").attr("fill") != pressedColorSpread) {
-                                                      d3.select(this)
-                                                          .select("circle")
-                                                          .attr("fill",hoverColorSpread);
-                                                  }
-                                              })
-                                              .on("mouseout", function() {
-                                                  if (d3.select(this).select("circle").attr("fill") != pressedColorSpread) {
-                                                      d3.select(this)
-                                                          .select("circle")
-                                                          .attr("fill",defaultColorSpread);
-                                                  }
-                                              })
-            start_lng = 43
-            start_lat=-11
-            buttonGroupsSpread.append("circle")
-                        .attr("class","buttonCircle")
-                        .attr("r",10)
-                        .attr("cx",projection([start_lng, start_lat])[0])
-                        .attr("cy",projection([start_lng, start_lat])[1])
-                        .attr("fill", 'defaultColorSpread')
+                                        })});})
+                                  .on("mouseover", function() {
+                                      if (d3.select(this).select("circle").attr("fill") != pressedColorSpread) {
+                                          d3.select(this)
+                                              .select("circle")
+                                              .attr("fill",hoverColorSpread);
+                                      }
+                                  })
+                                  .on("mouseout", function() {
+                                      if (d3.select(this).select("circle").attr("fill") != pressedColorSpread) {
+                                          d3.select(this)
+                                              .select("circle")
+                                              .attr("fill",defaultColorSpread);
+                                                }
+                                            }) 
+              spreading_locations.forEach(function(d){
+                d3.csv(nodes_folder+d+'_nodes.csv', function(data){
+                allButtonsSpread.select("#"+d)
+                // buttonGroupsSpread
+                          .append("circle")
+                          .attr("class","buttonCircle")
+                          .attr("r",10)
+                          .attr("cx", projection([data[0]['node_lng'], data[0]['node_lat']])[0])
+                          .attr("cy", projection([data[0]['node_lng'], data[0]['node_lat']])[1])
+                          .attr("fill", defaultColorSpread)
+              })});
 
           let allButtons= svg.append("g").attr("id","allButtons") 
             let labels= ['Overview','Expeditions','Spreading'];  //here maybe some more creative way
