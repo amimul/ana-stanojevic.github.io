@@ -2,13 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="initial-scale=1.0, width=device-width" />    
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     <title>Expeditions Map</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-     <script src="http://d3js.org/d3.v4.min.js"></script>
+    <script src="http://d3js.org/d3.v4.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Yanone+Kaffeesatz:200" rel="stylesheet">
+
+    <!--Map Core-->
+    <script type="text/javascript" src="src\map.js"></script>
+
+    <!-- Expeditions -->
+    <link rel="stylesheet" type="text/css" href="src\expeditions.css">
+    <script type="text/javascript" src="src\expeditions.js"></script>
+
+    <!--Tool-tip-->
+    <!--script src="src\d3-tip\d3-tip.js"></script-->
     <style>
+
+    .d3-tip {
+      line-height: 1;
+      padding: 6px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 4px;
+      font-size: 12px;
+    }
 
 body {
   margin: 0;
@@ -22,17 +41,17 @@ path:hover {
 }
 
 /* Style for Custom Tooltip */
-div.tooltip {   
- 	position: absolute;           
-	text-align: center;           
-	width: 60px;                  
-	height: 28px;                 
-	padding: 2px;             
-	font: 12px sans-serif;        
-	background: white;   
-	border: 0px;      
-	border-radius: 8px;           
-	pointer-events: none;         
+div.tooltip {
+ 	position: absolute;
+	text-align: center;
+	width: 60px;
+	height: 28px;
+	padding: 2px;
+	font: 12px sans-serif;
+	background: white;
+	border: 0px;
+	border-radius: 8px;
+	pointer-events: none;
 }
 
 #map-holder {
@@ -93,9 +112,8 @@ html, body {
 
   <body>
     <div id="map-holder"></div>
-    <script type="text/javascript"> 
-      // DEFINE VARIABLES
-      // Define size of map group
+    <script type="text/javascript">
+
       // Full world map is 2:1 ratio
       // Using 12:5 because we will crop top and bottom of map
       w = 3000;
@@ -103,82 +121,54 @@ html, body {
       // variables for catching min and max zoom factors
       var minZoom;
       var maxZoom;
-      var expedition_data = null;
+      var expedition_groups = [];
+      var expedition_data = new Map();
+
       // DEFINE FUNCTIONS/OBJECTS
-      // Define map projection
-      var projection = d3
-        .geoEquirectangular()
-        .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
-        .scale([w / (2 * Math.PI)]) // scale to fit group width
-        .translate([w / 2, h / 2]) // ensure centred in group
-      ;
-      // Define map path
-      var path = d3
-        .geoPath()
-        .projection(projection)
-      ;
+      let projection = map.projection( [0, 15] //center
+                                      , [w / (2 * Math.PI)] //scale
+                                      , [w / 2, h / 2] ); //translate
+
+      let path = map.path(projection);
+      let line = expeditions.geometry.line;
+
       // Create function to apply zoom to countriesGroup
+      let zooming = function(d) {
 
-      let line = d3.line().curve(d3.curveLinear)
-               .x(function(d) {
-                  long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
-                  lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
-                  return projection([long, lat])[0];
-                })
-               .y(function(d) {
-                  long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
-                  lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
-                  return projection([long, lat])[1];
-                });
+        let _g = d3.select("g");
 
-  let zooming = function(d) {
+        _g.selectAll("path")
+          .attr("d", path);
 
-    // let offset = [d3.event.transform.x, d3.event.transform.y];
-    // let scale = d3.event.transform.k*default_scale;
+        if(expedition_data.size != 0) {
+           for(var[id, e_data] of expedition_data) {
+             _g.select("#"+id).datum(e_data).attr("d", line);
+           }
+        }
 
-    // projection.translate(offset)
-    //           .scale(scale);
-
-    let _g = d3.select("g");
-
-    _g.selectAll("path")
-       .attr("d", path);
-
-    if(expedition_data != null) {
-      _g.selectAll('.line')
-        .datum(expedition_data)
-        .attr("d", line);
-    }
-
-    //update all circles
-    _g.selectAll("circle")
-      .attr("cx", function(d){
-        long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
-        lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
-        return projection([long, lat])[0];
-      })
-      .attr("cy", function(d){
-        long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
-        lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
-        return projection([long, lat])[1];
-      });
-  }
+      //update all circles
+        // _g.selectAll("circle")
+        //   .attr("cx", function(d) {
+        //     long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
+        //     lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
+        //     return projection([long, lat])[0];
+        //   })
+        //   .attr("cy", function(d) {
+        //     long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
+        //     lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
+        //     return projection([long, lat])[1];
+        //   });
+      }
 
       function zoomed() {
         zooming();
-        t = d3
-          .event
-          .transform
-        ;
+        t = d3.event.transform;
         countriesGroup
           .attr("transform","translate(" + [t.x, t.y] + ")scale(" + t.k + ")")
         ;
       }
       // Define map zoom behaviour
-      var zoom = d3
-        .zoom()
-        .on("zoom", zoomed)
-      ;
+      var zoom = d3.zoom().on("zoom", zoomed);
       function getTextBox(selection) {
         selection
           .each(function(d) {
@@ -188,7 +178,7 @@ html, body {
         ;
       }
 
-      // Function that calculates zoom/pan limits and sets zoom to default value 
+      // Function that calculates zoom/pan limits and sets zoom to default value
       function initiateZoom() {
         // Define a "minzoom" whereby the "Countries" is as small possible without leaving white space at top/bottom or sides
         minZoom = Math.max($("#map-holder").width() / w, $("#map-holder").height() / h);
@@ -250,10 +240,8 @@ html, body {
       // on window resize
       $(window).resize(function() {
         // Resize SVG
-        svg
-          .attr("width", $("#map-holder").width())
-          .attr("height", $("#map-holder").height())
-        ;
+        svg.attr("width", $("#map-holder").width())
+           .attr("height", $("#map-holder").height());
         initiateZoom();
       });
 
@@ -265,13 +253,14 @@ html, body {
         .attr("width", $("#map-holder").width())
         .attr("height", $("#map-holder").height())
         // add zoom functionality
-    .attr("fill", "pink")
-        .call(zoom)
-      ;
-// var div = d3.select("#map-holder")
-// 		    .append("div")   
-//     		.attr("class", "tooltip")               
-//     		.style("opacity", 0);
+        .attr("fill", "pink")
+        .call(zoom);
+
+      // var tool_tip = d3.tip()
+      //                  .attr("class", "d3-tip")
+      //                  .offset([-8, 0])
+      //                  .html(function(d) { return "(/km^2)\n0.335-0.999 mm: " + d.cd1 + "\n" + "1.00-4.75 mm: " + d.cd2; });
+      // svg.call(tool_tip);
 
       // get map data
       d3.json(
@@ -368,73 +357,136 @@ html, body {
             });
           initiateZoom();
 
-          const expedition_csv = "data/expeditions/expedition_01.csv"
-          d3.text(expedition_csv, function(error, raw) {
-            let dsv = d3.dsvFormat(';')
-            let data = dsv.parse(raw);
+          //58 csv files with data
+          const expedition_files = expeditions.csv.generate_file_list(30
+             , "data/expeditions/expedition_");
 
-            if(expedition_data == null) {
-              expedition_data = data;
-            }
+          function multiCsv(files, callback) {
+            let results = [];
+            let error = "";
+            let filesLength = (files || []).length;
+            let callbackInvoked = false;
 
-            let _g = d3.select("g");
-
-            _g.selectAll("circle")
-              .data(data).enter()
-              .append("circle")
-              .style("fill", "red")
-              .attr("r", 2)
-              .attr("cx", function(d){
-                lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
-                long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
-                return projection([long, lat])[0];
-              })
-              .attr("cy", function(d){
-                lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
-                long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
-                return projection([long, lat])[1];
+            files.forEach(function(csv_file){
+              d3.text(csv_file, function(error, raw) {
+                //TODO: remove condition after make expedition files in consistent form
+                if(error) {return;}
+                let dsv = d3.dsvFormat(';')
+                let data = dsv.parse(raw);
+                if (data === null) {
+                  error += "Error csv reading" + csv_file + "\n";
+                }
+                else {
+                  results.push(data);
+                }
+                //all files are read
+                if (!callbackInvoked && (error || results.length === filesLength)) {
+                  if (error) {
+                    callback(error, null); // might want to send partial results here
+                  }
+                  else {
+                    callback(null, results);
+                  }
+                  callbackInvoked = true;
+                }
               });
-            _g.append("path")
-              .datum(data)
-              .attr("class", "line")
-              .attr("d", line);
+            });
+          };
 
+          function get_coord(d, coord) {
+            const xy = {'x':0, 'y':1};
+
+            lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
+            long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
+            return projection([long, lat])[xy[coord]];
+          }
+
+          //further we will have expedition_id property
+          function get_expedition_id(data) {
+            let id_str = (data[0].Info.indexOf('-') != -1) ?
+              data[0].Info.split('-')[0] : data[0].Info;
+
+            return id_str.replace(/[/ ]+/g, "_");
+          }
+
+          multiCsv(expedition_files, function (err, results) {
+            let i = 1;
+            let map = d3.select("#map");
+
+            results.forEach(function(data) {
+              let expedition_id = get_expedition_id(data);
+              let exists = typeof(expedition_data.get(expedition_id)) !== 'undefined';
+
+              if(exists) {
+                expedition_id = expedition_id + i;
+                i += 1;
+              }
+              expedition_data.set(expedition_id, data);
+
+              map.append("path")
+                 .datum(data)
+                 .attr("class", "line")
+                 .attr("id", expedition_id)
+                 .attr("d", line);
+
+              map.append("g").attr("id", expedition_id)
+                .selectAll("circle")
+                .data(data).enter().append("circle")
+                  .attr("cx", function(d){
+                    return get_coord(d, 'x');
+                  })
+                  .attr("cy", function(d){
+                    return get_coord(d, 'y');
+                  })
+                  .attr("r", 3)
+                  .attr("fill","red")
+                  .style("stroke", "white")
+                  .style("stroke-width","1")
+                  .on('mouseover',function(d) {
+                    d3.select(this).attr("r", 4).style("fill", "blue");
+                  })
+                  .on('mouseout',function (d) {
+                    d3.select(this).attr("r", 3).style("fill", "red");
+                  })
+
+                  ;
+            });
           });
 
-          let allButtons= svg.append("g").attr("id","allButtons") 
-            let labels= ['Overview','Expeditions','Spreading'];  //here maybe some more creative way
-            let defaultColor= "#7777BB"
-            let hoverColor= "#0000ff"
-            let pressedColor= "#000077"
+          let allButtons= svg.append("g").attr("id","allButtons");
+          let labels= ['Overview','Expeditions','Spreading'];  //here maybe some more creative way
+          let defaultColor= "#7777BB"
+          let hoverColor= "#0000ff"
+          let pressedColor= "#000077"
 
-            let buttonGroups= allButtons.selectAll("g.button")
-                                              .data(labels)
-                                              .enter()
-                                              .append("g")
-                                              .attr("class","button")
-                                              .style("cursor","pointer")
-                                              .on("click",function(d,i) {
+          let buttonGroups= allButtons.selectAll("g.button")
+                                      .data(labels).enter()
+                                      .append("g")
+                                      .attr("class","button")
+                                      .style("cursor","pointer")
+                                      .on("click",function(d,i) {
                                                   d3.select(this.parentNode).selectAll("rect").attr("fill",defaultColor)
                                                   d3.select(this).select("rect").attr("fill",pressedColor)
                                                   var url = 'map_'+d+'.html'
                                                   console.log(url)
                                                   // $(location).attr('href', url);
-                                                  window.location.assign(url); 
+                                                  window.location.assign(url);
                                               })
-                                              .on("mouseover", function() {
+                                      .on("mouseover", function() {
                                                   if (d3.select(this).select("rect").attr("fill") != pressedColor) {
                                                       d3.select(this)
                                                           .select("rect")
                                                           .attr("fill",hoverColor);
                                                   }
                                               })
-                                              .on("mouseout", function() {
+                                      .on("mouseout", function() {
                                                   if (d3.select(this).select("rect").attr("fill") != pressedColor) {
                                                       d3.select(this)
                                                           .select("rect")
                                                           .attr("fill",defaultColor);
                                                   }
-                                              })
+                                              });
+
             var bWidth= 100; //button width
             var bHeight= 25; //button height
             var bSpace= 10; //space between buttons
@@ -448,7 +500,7 @@ html, body {
                         .attr("y",function(d,i) {return y0+(bHeight+bSpace)*i;})
                         .attr("rx",5) //rx and ry give the buttons rounded corners
                         .attr("ry",5)
-                        .attr("fill",'defaultColor')
+                        .attr("fill",'defaultColor');
 
             buttonGroups.append("text")
                         .attr("class","buttonText")
@@ -458,9 +510,8 @@ html, body {
                         .attr("text-anchor","middle")
                         .attr("dominant-baseline","central")
                         .attr("fill","white")
-                        .text(function(d) {return d;})
-                    }
-                  );
+                        .text(function(d) {return d;});
+                    });
 
 </script>
   </body>
