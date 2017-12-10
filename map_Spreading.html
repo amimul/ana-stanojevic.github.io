@@ -70,8 +70,35 @@ svg rect {
 
 .line {
     fill: none;
-    stroke: yellow;
+    stroke: red;
     stroke-width: 1.5;
+    shape-rendering: crispEdges;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+.edges_red {
+    fill: red;
+    stroke: red;
+    stroke-width: 3;
+    shape-rendering: crispEdges;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+.edges_green {
+    fill: green;
+    stroke: green;
+    stroke-width: 1.5;
+    shape-rendering: crispEdges;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+.edges_gray {
+    fill: none;
+    stroke: gray;
+    stroke-width: 1;
     shape-rendering: crispEdges;
     stroke-linejoin: round;
     stroke-linecap: round;
@@ -343,15 +370,17 @@ html, body {
                                       rows.forEach(function(d, i){
                                          setTimeout(function(){
                                           _g.append("line")
-                                            .attr("class", "edges")
-                                            .attr("stroke","yellow")
+                                            .attr("class", "edges_"+d.color)
+                                            //.attr("stroke", "red")
                                             .style("opacity", 1)
                                             .attr("x1", projection([d.parent_lng, d.parent_lat])[0])   // x position of the first end of the line
-                                            .attr("y1",projection([d.parent_lng, d.parent_lat])[1])      // y position of the first end of the line
+                                            .attr("y1",function(){
+                                            console.log(rows.length)
+                                            return projection([d.parent_lng, d.parent_lat])[1] })    // y position of the first end of the line
                                             .attr("x2", projection([d.child_lng, d.child_lat])[0])     // x position of the second end of the line
                                             .attr("y2", projection([d.child_lng, d.child_lat])[1])
                                             .transition()
-                                            .duration(30000)
+                                            .duration((rows.length-i*1.7)*15 +rows.length*20)
                                             .style("opacity", 0)
                                             .remove()
                                           }, parseInt(d.depth)*15 + i *15);
