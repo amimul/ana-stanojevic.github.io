@@ -441,10 +441,6 @@ html, body {
             let map = d3.select("#map");//.on('mousemove', mousemoved);
 
             results.forEach(function(data) {
-              if(typeof data === "undefined") {
-                continue;
-              }
-
               let expedition_id = get_expedition_id(data);
               let exists = typeof(expedition_data.get(expedition_id)) !== 'undefined';
 
