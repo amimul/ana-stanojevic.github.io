@@ -15,6 +15,8 @@ var expeditions = {
                   long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
                   lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
                   return projection([long, lat])[1];
-                }),
+                })
+
+
     }//geometry
 };

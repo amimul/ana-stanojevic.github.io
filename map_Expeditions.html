@@ -17,8 +17,21 @@
     <script type="text/javascript" src="src\expeditions.js"></script>
 
     <!--Tool-tip-->
-    <!--script src="src\d3-tip\d3-tip.js"></script-->
+    <!--script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script-->
+    <script src="src\d3-tip\d3-tip.js"></script>
     <style>
+
+    .tooltip {
+      position: absolute;
+      text-align: center;
+      width: 60px;
+      height: 12px;
+      padding: 8px;
+      margin-top: -20px;
+      font: 10px sans-serif;
+      background: #ddd;
+      pointer-events: none;
+    }
 
     .d3-tip {
       line-height: 1;
@@ -123,6 +136,8 @@ html, body {
       var maxZoom;
       var expedition_groups = [];
       var expedition_data = new Map();
+      let SELECTED_EXP_ID = null;
+
 
       // DEFINE FUNCTIONS/OBJECTS
       let projection = map.projection( [0, 15] //center
@@ -131,10 +146,10 @@ html, body {
 
       let path = map.path(projection);
       let line = expeditions.geometry.line;
+      let closest_point = expeditions.geometry.closestPoint;
 
       // Create function to apply zoom to countriesGroup
       let zooming = function(d) {
-
         let _g = d3.select("g");
 
         _g.selectAll("path")
@@ -145,19 +160,6 @@ html, body {
              _g.select("#"+id).datum(e_data).attr("d", line);
            }
         }
-
-      //update all circles
-        // _g.selectAll("circle")
-        //   .attr("cx", function(d) {
-        //     long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
-        //     lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
-        //     return projection([long, lat])[0];
-        //   })
-        //   .attr("cy", function(d) {
-        //     long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
-        //     lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
-        //     return projection([long, lat])[1];
-        //   });
       }
 
       function zoomed() {
@@ -255,12 +257,6 @@ html, body {
         // add zoom functionality
         .attr("fill", "pink")
         .call(zoom);
-
-      // var tool_tip = d3.tip()
-      //                  .attr("class", "d3-tip")
-      //                  .offset([-8, 0])
-      //                  .html(function(d) { return "(/km^2)\n0.335-0.999 mm: " + d.cd1 + "\n" + "1.00-4.75 mm: " + d.cd2; });
-      // svg.call(tool_tip);
 
       // get map data
       d3.json(
@@ -409,9 +405,40 @@ html, body {
             return id_str.replace(/[/ ]+/g, "_");
           }
 
+          function cancel_highlight(map) {
+            if(SELECTED_EXP_ID == null) {
+              return;
+            }
+
+            let e_data = expedition_data.get(SELECTED_EXP_ID)
+            map.selectAll("path#" + SELECTED_EXP_ID)
+               .style("stroke", "yellow").style("stroke-width", "1.5");
+
+            map.selectAll("circle#" + SELECTED_EXP_ID)
+               .style("stroke-width","1");
+            SELECTED_EXP_ID = null;
+          }
+
+          function highlight(map, exp_id) {
+            if(exp_id === SELECTED_EXP_ID) {
+              return;
+            }
+
+            SELECTED_EXP_ID = exp_id;
+
+            map.selectAll("path#" + SELECTED_EXP_ID)
+               .style("stroke", "white")
+               .style("stroke-width","2");
+
+            map.selectAll("circle#" + SELECTED_EXP_ID)
+               .style("stroke-width","2");
+
+            //TODO: display statistics or general information
+          }
+
           multiCsv(expedition_files, function (err, results) {
             let i = 1;
-            let map = d3.select("#map");
+            let map = d3.select("#map");//.on('mousemove', mousemoved);
 
             results.forEach(function(data) {
               let expedition_id = get_expedition_id(data);
@@ -427,9 +454,25 @@ html, body {
                  .datum(data)
                  .attr("class", "line")
                  .attr("id", expedition_id)
-                 .attr("d", line);
+                 .attr("d", line)
+                 .on('mouseout', function(d) {
+                   let this_path = d3.select(this);
+                   let e_id = this_path.attr("id");
+                   if(SELECTED_EXP_ID === e_id) {
+                       cancel_highlight(map);
+                   }
+                   this_path.style("cursor", "default");
+                 }).on('mouseover', function(d){
+                   let this_path = d3.select(this);
+                   let e_id = this_path.attr("id");
+                   if(SELECTED_EXP_ID !== e_id) {
+                       highlight(map, expedition_id);
+                   }
 
-              map.append("g").attr("id", expedition_id)
+                   this_path.style("cursor", "pointer");
+                 });
+
+              map.append("g")
                 .selectAll("circle")
                 .data(data).enter().append("circle")
                   .attr("cx", function(d){
@@ -439,17 +482,30 @@ html, body {
                     return get_coord(d, 'y');
                   })
                   .attr("r", 3)
+                  .attr("id", expedition_id)
                   .attr("fill","red")
                   .style("stroke", "white")
                   .style("stroke-width","1")
-                  .on('mouseover',function(d) {
-                    d3.select(this).attr("r", 4).style("fill", "blue");
+                  .on('mouseover', function(d) {
+                    let this_circle = d3.select(this);
+                    let e_id = this_circle.attr("id");
+                    if(SELECTED_EXP_ID !== e_id) {
+                        highlight(map, expedition_id);
+                    }
+
+                    this_circle.style("cursor", "pointer")
+                               .attr("r", 4).style("fill", "blue");
                   })
                   .on('mouseout',function (d) {
-                    d3.select(this).attr("r", 3).style("fill", "red");
-                  })
+                    let this_circle = d3.select(this);
+                    let e_id = this_circle.attr("id");
+                    if(SELECTED_EXP_ID === e_id) {
+                        cancel_highlight(map);
+                    }
 
-                  ;
+                    this_circle.style("cursor", "default")
+                               .attr("r", 3).style("fill", "red");
+                  });
             });
           });
 
