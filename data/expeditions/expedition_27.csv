@@ -1,26 +1,7 @@
-02/09/2013;-21,1987;115,4921;556,04;556,04;0;0;;;;;4;J. Reisser;Solander/Trip 5866;;trawl data
-02/09/2013;-21,1906;115,5098;0;556,84;0;0;;;;;4;J. Reisser;Solander/Trip 5866;;trawl data
-03/09/2013;-19,9658;117,0945;623,33;623,33;0;0;;;;;3;J. Reisser;Solander/Trip 5866;;trawl data
-03/09/2013;-19,9509;117,1017;0;0;0;0;;;;;3;J. Reisser;Solander/Trip 5866;;trawl data
-03/09/2013;-19,9363;117,1094;0;626,67;1 880,02;0;;;;;3;J. Reisser;Solander/Trip 5866;;trawl data
-03/09/2013;-18,7301;118,7413;562,58;2 812,92;562,58;0;;;;;3;J. Reisser;Solander/Trip 5866;;trawl data
-03/09/2013;-18,7177;118,7536;0;2 485,01;2 485,01;0;;;;;3;J. Reisser;Solander/Trip 5866;;trawl data
-03/09/2013;-18,7053;118,7648;0;1 263,41;3 158,53;0;;;;;3;J. Reisser;Solander/Trip 5866;;trawl data
-04/09/2013;-17,663;120,1319;33 316,95;147 546,50;39 436,39;0;;;;;1;J. Reisser;Solander/Trip 5866;;trawl data
-04/09/2013;-17,6541;120,1444;4 178,74;47 359,03;5 571,65;0;;;;;1;J. Reisser;Solander/Trip 5866;;trawl data
-04/09/2013;-17,6461;120,1562;0;6 305,09;1 261,02;0;;;;;1;J. Reisser;Solander/Trip 5866;;trawl data
-05/09/2013;-15,2109;123,3237;0;771,55;1 543,11;0;;;;;2;J. Reisser;Solander/Trip 5866;;trawl data
-05/09/2013;-15,2024;123,3331;0;768,01;0;0;;;;;2;J. Reisser;Solander/Trip 5866;;trawl data
-05/09/2013;-15,1943;123,3441;0;0;0;0;;;;;2;J. Reisser;Solander/Trip 5866;;trawl data
-05/09/2013;-14,2914;124,7811;0;0;0;0;;;;;2;J. Reisser;Solander/Trip 5866;;trawl data
-05/09/2013;-14,2834;124,7901;0;735,72;0;0;;;;;2;J. Reisser;Solander/Trip 5866;;trawl data
-05/09/2013;-14,275;124,8004;0;0;783,97;0;;;;;2;J. Reisser;Solander/Trip 5866;;trawl data
-07/09/2013;-13,7461;127,598;1 241,15;620,58;620,58;0;;;;;2;J. Reisser;Solander/Trip 5866;;trawl data
-07/09/2013;-13,7412;127,6131;0;0;0;0;;;;;2;J. Reisser;Solander/Trip 5866;;trawl data
-07/09/2013;-13,7361;127,6277;0;0;0;0;;;;;2;J. Reisser;Solander/Trip 5866;;trawl data
-07/09/2013;-12,8234;129,3859;0;0;0;0;;;;;4;J. Reisser;Solander/Trip 5866;;trawl data
-07/09/2013;-12,8191;129,4002;0;0;0;0;;;;;4;J. Reisser;Solander/Trip 5866;;trawl data
-07/09/2013;-12,8145;129,4155;0;0;0;0;;;;;4;J. Reisser;Solander/Trip 5866;;trawl data
-08/09/2013;-12,414;130,1598;0;0;0;0;;;;;4;J. Reisser;Solander/Trip 5866;;trawl data
-08/09/2013;-12,4086;130,1689;0;0;0;0;;;;;4;J. Reisser;Solander/Trip 5866;;trawl data
-08/09/2013;-12,4039;130,1783;0;0;0;0;;;;;4;J. Reisser;Solander/Trip 5866;57;trawl data
+Date;Latitude;Longitude;cd1;cd2;cd3;cd4;wd1;wd2;wd3;wd4;SeaState;Source;Info;Comments;
+25/07/2009;29,7333;-150,6167;;;;10,45;;;;4 750,31;;H. Carson;ENPG 2009;;
+26/07/2009;31,0667;-148,8;;;;9,23;;;;8 854,48;;H. Carson;ENPG 2009;;
+27/07/2009;32,5667;-147,4167;;;;4,51;;;;3 879,38;;H. Carson;ENPG 2009;;
+28/07/2009;34,4333;-145,8167;;;;5,31;;;;3 546,05;;H. Carson;ENPG 2009;;
+29/07/2009;36,5;-144,9;;;;9,21;;;;7 447,62;;H. Carson;ENPG 2009;;
+30/07/2009;37,9667;-143,4833;;;;8,32;;;;4 459,81;;H. Carson;ENPG 2009;;

@@ -1,35 +1,12 @@
-07/06/2012;-18,5777;176,4901;0;5 501,14;2 357,63;0;;;;;3;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-07/06/2012;-18,5851;176,4799;0;2 504,46;834,82;0;;;;;3;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-07/06/2012;-19,9823;174,9867;0;7 422,71;2 226,81;0;;;;;2;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-07/06/2012;-19,9931;174,9779;0;6 768,23;752,03;0;;;;;2;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-07/06/2012;-20,0037;174,9692;0;3 789,59;0;0;;;;;2;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-08/06/2012;-21,2832;173,5759;0;946,73;0;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-08/06/2012;-21,2887;173,5634;0;802,09;0;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-08/06/2012;-21,2977;173,5556;0;1 311,36;0;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-08/06/2012;-22,5974;172,1044;0;1 287,82;1 287,82;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-08/06/2012;-22,6026;172,0898;0;729,39;2 188,17;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-08/06/2012;-22,6078;172,0762;0;2 805,71;701,43;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-09/06/2012;-23,7533;170,5329;0;0;0;0;;;;;5;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-09/06/2012;-23,7615;170,5216;0;0;0;0;;;;;5;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-09/06/2012;-23,7698;170,5103;0;0;0;0;;;;;5;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-09/06/2012;-25,0757;168,7064;0;706,36;1 412,72;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-09/06/2012;-25,0842;168,6944;0;0;0;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-09/06/2012;-25,0929;168,6825;0;0;0;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-10/06/2012;-26,289;167,0086;0;711,53;711,53;0;;;;;5;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-10/06/2012;-26,2961;166,9962;0;0;764,53;0;;;;;5;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-10/06/2012;-26,3028;166,9834;0;729,64;0;0;;;;;5;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-10/06/2012;-27,5323;165,1923;0;711,66;0;0;;;;;6;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-10/06/2012;-27,5442;165,1843;0;703,91;1 407,82;0;;;;;6;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-10/06/2012;-27,5561;165,1763;0;0;697,16;0;;;;;6;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-15/06/2012;-35,649;155,0695;0;652,38;0;0;;;;;5;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-15/06/2012;-35,6615;155,0586;0;0;0;0;;;;;5;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-15/06/2012;-35,6732;155,0482;0;0;0;0;;;;;5;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-15/06/2012;-37,3779;153,5364;0;3 595,34;0;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-15/06/2012;-37,3894;153,526;688,91;6 889,05;2 066,72;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-15/06/2012;-37,4107;153,5144;927,72;6 494,05;927,72;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-16/06/2012;-42,286;148,9709;0;4 592,44;918,49;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-16/06/2012;-42,2972;148,9603;0;922,26;922,26;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-16/06/2012;-42,3087;148,9488;0;0;0;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-17/06/2012;-42,8277;148,448;0;825,84;825,84;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-17/06/2012;-42,8371;148,4349;0;1 525,02;1 525,02;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;;trawl data
-17/06/2012;-42,8448;148,4211;0;2 289,16;0;0;;;;;4;J. Reisser;Southern Surveyor/ss2012_t03;117;trawl data
+Date;Latitude;Longitude;cd1;cd2;cd3;cd4;wd1;wd2;wd3;wd4;SeaState;Source;Info;Comments;
+14/06/2012;33,2582;151,1831;20 879,57;29 285,63;2 982,80;;3,71;63,21;16,27;;3;M. Eriksen;NPG12-SM022;;
+15/06/2012;32,0859;153,1712;6 919,37;24 632,94;553,55;;1,69;70,16;11,43;;3;M. Eriksen;NPG12-SM023;;
+16/06/2012;31,2728;155,3199;3 546,62;9 995,02;2 256,94;;0,87;32,27;291,4;;2;M. Eriksen;NPG12-SM024;;
+17/06/2012;30,7313;157,7742;2 553,92;11 918,30;4 540,30;;0,85;70,52;176,5;;2;M. Eriksen;NPG12-SM025;;
+18/06/2012;30,191;160,4028;8 654,04;24 725,84;0;;1,14;91,24;0;;2;M. Eriksen;NPG12-SM026;;
+19/06/2012;30,4448;163,3177;1 832,98;6 022,66;261,85;;0,31;12,31;33,52;;3;M. Eriksen;NPG12-SM027;;
+20/06/2012;30,4993;166,0763;9 357,02;15 311,50;1 417,73;;0,96;30,91;57,28;;2;M. Eriksen;NPG12-SM028;;
+21/06/2012;30,077;168,133;24 616,74;23 406,08;807,11;;4,68;50,44;292,17;;3;M. Eriksen;NPG12-SM029;;
+22/06/2012;29,1979;169,8263;3 547,73;11 234,48;591,29;;0,44;53,87;25,72;;2;M. Eriksen;NPG12-SM030;;
+23/06/2012;29,4129;172,0143;6 335,44;11 966,93;1 759,84;;0,84;68,92;296,01;;2;M. Eriksen;NPG12-SM031;;
+24/06/2012;28,4783;175,315;31 770,67;42 236,31;2 242,64;;6,39;99,5;595,42;;3;M. Eriksen;NPG12-SM032;;
