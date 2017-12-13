@@ -1,0 +1,273 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
+      <!--script type="text/javascript" src="..\src\expeditions.js"></script-->
+
+  </head>
+  <style>
+    /* circle {
+      fill: #333;
+      opacity: 0.3;
+      stroke: white;
+      } */
+    /* .node--hover circle {
+      stroke: #000;
+      stroke-width: 1.2px;
+    } */
+
+    .node {
+  cursor: pointer;
+}
+
+.node:hover {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node--leaf {
+  fill: white;
+}
+
+.label {
+  font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
+.label,
+.node--root,
+.node--leaf {
+  pointer-events: none;
+}
+  </style>
+
+  <body>
+    <div id="chart"></div>
+    <svg width="960" height="960"><g transform="translate(1,1)"></g></svg>
+
+    <script>
+
+      var svg = d3.select("svg"),
+          width = +svg.attr("width"),
+          height = +svg.attr("height");
+
+      var diameter  = 400, margin = 20;
+
+      const expedition_files = {
+        'atlantic' : ["expedition_0.csv"
+          , "expedition_1.csv"
+          , "expedition_2.csv"
+          , "expedition_10.csv"
+          , "expedition_18.csv"],
+        'pacific' : ["expedition_4.csv"]
+      };
+
+      const N = expedition_files['atlantic'].length +
+        expedition_files['pacific'].length;
+
+      function multiCsv(files, callback) {
+        let results = new Map();
+        let read_files = 0;
+
+        for(var k in files) {
+          for(var i in files[k]) {
+
+            let file_name = files[k][i];
+            let ocean = k;
+            if(!results[ocean]) {
+              results[ocean] = [];
+            }
+
+            d3.text(file_name, function(error, raw) {
+              if(error) { return; }
+              let dsv = d3.dsvFormat(';');
+              let data = dsv.parse(raw);
+              results[ocean].push(data);
+              read_files += 1;
+
+              if(read_files == N) {
+                callback(results);
+              }
+            });
+          }
+        }
+      }
+
+      const r_func = (str) => str.replace(/\s/g, '').replace(/\,/g, '.');
+
+      function get_expedition_id(data) {
+        let id_str = (data[0].Info.indexOf('-') != -1) ?
+          data[0].Info.split('-')[0] : data[0].Info;
+
+        return id_str.replace(/[/ ]+/g, "_");
+      }
+
+      multiCsv(expedition_files, function (results) {
+        function Ocean(name, expeditions) {
+          this.name = name;
+          this.children = expeditions.map(data => new Expedition(data));
+        }
+
+        function Expedition(data) {
+          this.name = get_expedition_id(data);
+          this.children = data.map(d => new ExPoint(d));
+        }
+
+        function ExPoint(d) {
+
+          let cd_v1 = parseFloat(r_func(d.cd1));
+          let cd_v2 = parseFloat(r_func(d.cd2));
+          let cd_v3 = parseFloat(r_func(d.cd3));
+          let cd_v4 = parseFloat(r_func(d.cd4));
+
+          let wd_v1 = parseFloat(r_func(d.wd1));
+          let wd_v2 = parseFloat(r_func(d.wd2));
+          let wd_v3 = parseFloat(r_func(d.wd3));
+          let wd_v4 = parseFloat(r_func(d.wd4));
+
+          this.total_cd = (isNaN(cd_v1) ? 0 : cd_v1) +
+            (isNaN(cd_v2) ? 0 : cd_v2) +
+            (isNaN(cd_v3) ? 0 : cd_v3) +
+            (isNaN(cd_v4) ? 0 : cd_v4);
+
+          this.wd1 = (isNaN(wd_v1) ? 0 : wd_v1);
+          this.wd2 = (isNaN(wd_v2) ? 0 : wd_v2);
+          this.wd3 = (isNaN(wd_v3) ? 0 : wd_v3);
+          this.wd4 = (isNaN(wd_v4) ? 0 : wd_v4);
+        }
+
+        let data_list = [];
+        for(var key in results) {
+          data_list.push(new Ocean(key, results[key]));
+        }
+        drawAll(data_list);
+      });
+
+      var color = d3.scaleSequential(d3.interpolateMagma)
+          .domain([-4, 4]);
+
+      function drawData(data) {
+        let ocean_json_str = JSON.stringify(data);
+        let ocean_json = JSON.parse(ocean_json_str);
+
+        var packLayout = d3.pack()
+          .size([diameter-margin, diameter-margin]).padding(3);
+
+        let root = d3.hierarchy(ocean_json, function(d){ return d.children; })
+        .sum(function(d) {
+          return d.total_cd;
+        })
+        .sort(function(d1, d2){
+          return d2.total_cd - d1.total_cd;
+        });
+
+        packLayout(root);
+
+        // svg.append("g")
+        //   .selectAll('circle')
+        //   .data(root.descendants())
+        //   .enter()
+        //   .append('circle')
+        //   .attr("fill", function(d) { return genColor();})
+        //   .attr('cx', function(d) { return d.x; })
+        //   .attr('cy', function(d) { return d.y; })
+        //   .attr('r', function(d) { return d.r; });
+
+        var focus = root,
+            nodes = root.descendants(),
+            view;
+
+        var g = svg.select("g")
+          .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+        var node = g.selectAll("g")
+          .data(nodes)
+          .enter().append("g")
+          .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+          .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+          //.attr("class", function(d) { return "node" + (!d.children ? " node--leaf" : d.depth ? "" : " node--root"); })
+          .each(function(d) { d.node = this; })
+          .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); })
+          .on("mouseover", hovered(true))
+          .on("mouseout", hovered(false));
+
+        svg.on("click", function() { zoom(root); });
+
+        var circle = node.append("circle")
+          .attr("r", function(d) { return d.r; })
+          .style("fill", function(d) { return color(d.depth); });
+
+        zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+        function zoom(d) {
+          var focus0 = focus; focus = d;
+          var transition = d3.transition()
+              .duration(d3.event.altKey ? 7500 : 750)
+              .tween("zoom", function(d) {
+                var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+                return function(t) { zoomTo(i(t)); };
+              });
+        }
+
+        function zoomTo(v) {
+          console.log(v);
+          var k = diameter / v[2]; view = v;
+          node.attr("transform", function(d) {
+            console.log('d.x=', d.x, 'd.y=', d.y);
+            return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")";
+          });
+          circle.attr("r", function(d) { return d.r * k; });
+        }
+
+
+        //mouse interaction
+
+        // var leaf = nodes.filter(function(d) { return !d.children; });
+        //
+        // leaf.append("clipPath")
+        //   .attr("id", function(d) { return "clip-" + d.wd1; })
+        //   .append("use")
+        //   .attr("xlink:href", function(d) { return "#node-" + d.wd1 + ""; });
+
+        //text for node
+        // nodes.append('text')
+        //     .attr('dy', 4)
+        //     .text(function(d) {
+        //       return d.children === undefined ? d.data.wd1 : '';
+        //     });
+
+      }
+
+      function hovered(hover) {
+        return function(d) {
+          d3.selectAll(d.ancestors().map(function(d) { return d.node; })).classed("node--hover", hover);
+        };
+      }
+
+      var nextCol = 1;
+			function genColor(){
+				var ret = [];
+				// via http://stackoverflow.com/a/15804183
+				if(nextCol < 16777215){
+				  ret.push(nextCol & 0xff); // R
+				  ret.push((nextCol & 0xff00) >> 8); // G
+				  ret.push((nextCol & 0xff0000) >> 16); // B
+
+				  nextCol += 100; // This is exagerated for this example and would ordinarily be 1.
+				}
+				var col = "rgb(" + ret.join(',') + ")";
+				return col;
+			}//function genColor
+
+      function drawAll(data_list) {
+        for(var i in data_list) {
+          console.log(data_list[i]);
+          drawData(data_list[i]);
+          break;
+        }
+      }
+
+    </script>
+  </body>
+</html>
