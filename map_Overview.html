@@ -42,6 +42,11 @@ path:hover {
   content: '✖'; /* UTF-8 symbol */
 }
 
+.axis_x { font: 20px sans-serif; }
+
+.axis_y { font: 20px sans-serif
+        }
+
 /* Style for Custom Tooltip */
 div.tooltip {   
  	position: absolute;           
@@ -56,6 +61,9 @@ div.tooltip {
 	pointer-events: none;         
 }
 
+#stats_rect{
+  color:yellow;
+}
 #map-holder {
   width: 100vw;
   height: 100vh;
@@ -91,6 +99,10 @@ svg rect {
 
 svg {
   background: lightBlue;
+}
+.svg_ocean{
+    width: 100%;
+  height: 100%;
 }
 html, body {
     max-width: 100% !important;
@@ -341,24 +353,142 @@ html, body {
       var x0_ocean= window.innerWidth/2 - bWidth_ocean/2; //x offset
       var y0_ocean= window.innerHeight-5-bHeight_ocean; //y offset
 
-      const window_height = 300
-      const window_width = 800
+      const window_height = 350
+      const window_width = 1000
 
-      const expedition_files = expeditions.csv.generate_file_list(30
-             , "data/expeditions/expedition_");
-      expedition_files.forEach(function(csv_file){
-              d3.text(csv_file, function(error, raw) {
-                let dsv = d3.dsvFormat(';')
-                let data = dsv.parse(raw);
-              })});
+      let x_axis, y_axis;
+      // this returns function
+      x_ticks=["0.33-1mm", "1-4.75mm", "4.76-200mm", ">200mm"]
+      y_ticks=["Atlantic", "Indian","Mediterranean", "Pacific"]
+      let range_x = [];
+      min_x=window.innerWidth/2-window_width/2
+      max_x=window.innerWidth/2+window_width/2-200
+      tick_x = (max_x-min_x)/x_ticks.length
+      for (var k =0;k<x_ticks.length; k++){
+        range_x.push(min_x+k*(tick_x))
+      }
+      let range_y = [];
+      min_y=window.innerHeight-window_height
+      max_y=window.innerHeight-100
+      tick_y = (max_y-min_y)/y_ticks.length
+      for (var k =0;k<y_ticks.length; k++){
+        range_y.push(min_y+k*(tick_y))
+      }
+        let x_scale = d3.scaleOrdinal()
+                        .range(range_x)
+                        .domain (x_ticks); 
+        let y_scale = d3.scaleOrdinal()
+                        .range(range_y)
+                        .domain (y_ticks); //.nice();
+        x_axis = d3.axisBottom()
+                     .scale(x_scale).tickSize(20)
+        y_axis = d3.axisLeft()
+          .scale(y_scale).tickSize(1000)
 
-      // //this returns function
-      // let x_scale = d3.scaleLinear()
-      //                 .domain([0, x_max])
-      //                 .range([padding, w - padding]);
-      // let y_scale = d3.scaleLinear()
-      //                 .domain([0, y_max])
-      //                 .range([h-padding, padding]);
+      // const line_func = d3.line()
+      //                  .x(function(d) { return x_scale(d[0]); })
+      //                  .y(function(d) { return y_scale(d[1]); });
+    function customYAxis(g) {
+      g.call(y_axis);
+      g.select(".domain").remove();
+      g.selectAll(".tick line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
+      g.selectAll(".tick text").attr("x", -840).attr("dy", -4);
+    }
+    let svg_oceans;
+
+      function plot_data(data){
+        r_cds=[]
+        r_wds=[]
+        circle_fact = 35
+        rect_fact = 35
+        for (let i=0; i< data.length; i++){
+          r_wds.push(data[i]['wd1_r']*circle_fact)
+          r_wds.push(data[i]['wd2_r']*circle_fact)
+          r_wds.push(data[i]['wd3_r']*circle_fact)
+          r_wds.push(data[i]['wd4_r']*circle_fact)
+          r_cds.push(data[i]['cd1_r']*rect_fact)
+          r_cds.push(data[i]['cd2_r']*rect_fact)
+          r_cds.push(data[i]['cd3_r']*rect_fact)
+          r_cds.push(data[i]['cd4_r']*rect_fact)
+        } 
+
+        const x_start=270
+        const y_start=54
+        const x_diff = 200
+        const y_diff = 62.5
+        circles = svg_oceans.append('g').attr("class", "circles")
+                  circles.selectAll('circle')
+                  .data(r_wds)
+                  .enter()
+                  .append("circle")
+                  .attr("id", function(d,i){return 'circle'+i})
+                  .attr("class",function(d){return "circle_"+d;})
+                  .attr("r",function(d){return d;})
+                  .attr("cx", function(d,i){return x_start+(i%4)*x_diff})
+                  .attr("cy", function(d,i){return y_start+(parseInt(i/4)*y_diff)})
+                  .attr("fill", "green")
+                  .style('stroke', "#00FF00")
+                  .on('mouseover', function(d,i){
+                      d3.event.preventDefault();
+                      d3.select("#"+this.getAttribute("id")).style("stroke-width","3");
+                      popup = d3.select("#main_panel")
+                      .append("div")
+                      .attr("class", "popup")
+                      .attr("id", "circle_popup")
+                      .style("left", x_start+(i%4)*x_diff-d/2+"px")
+                      .style("top", y_start+(parseInt(i/4)*y_diff)-d-20+"px")
+                      .style("height", 20+"px")
+                      .style("width", 20+"px")
+                      //.style("background-color", "white")
+                      popup.append("strong").append("em").text((d3.format(".1f")(d)+"t"))
+                      .style('font-size', '14px')
+                      .style('font-weight', 'bold')
+                      .style('color', 'black')
+                  })
+                  .on("mouseout", function(){
+                      d3.event.preventDefault();
+                      d3.select("#"+this.getAttribute("id")).style("stroke-width","1");
+                      d3.select("#circle_popup").remove();
+                  })
+        rects  = svg_oceans.append('g').attr("class", "rects")
+
+        rects.selectAll('rect')
+                  .data(r_cds)
+                  .enter()
+                  .append("rect")
+                  .attr("id", "stats_rect")
+                  .attr("id", function(d,i){return 'rect'+i})
+                  .attr("class",function(d){return "rect_"+d;})
+                  .attr("width",function(d){return d;})
+                  .attr("height",function(d){return d;})
+                  .attr("x", function(d,i){return x_start+(i%4)*200+40-d/2})
+                  .attr("y", function(d,i){return y_start-d/2+(parseInt(i/4)*62.5)})
+                  .attr("fill", "black")
+                  .style('stroke', "#D3D3D3")
+                  .on('mouseover', function(d,i){
+                      d3.event.preventDefault();
+                      d3.select("#"+this.getAttribute("id")).style("stroke-width","3");
+                      d3.selectAll(this).style("stroke-width","2");
+                      popup = d3.select("#main_panel")
+                      .append("div")
+                      .attr("class", "popup")
+                      .attr("id", "rect_popup")
+                      .style("left", x_start+(i%4)*x_diff+40-d/2+"px")
+                      .style("top", y_start+(parseInt(i/4)*y_diff)-d/2-20+"px")
+                      .style("height", 20+"px")
+                      .style("width", 20+"px")
+                      //.style("background-color", "white")
+                      popup.append("strong").append("em").text((d3.format(".1f")(d)+"billion"))
+                      .style('font-size', '14px')
+                      .style('font-weight', 'bold')
+                      .style('color', 'black')
+                  })
+                  .on("mouseout", function(){
+                      d3.event.preventDefault();
+                      d3.select("#"+this.getAttribute("id")).style("stroke-width","1");
+                      d3.select("#rect_popup").remove();
+                  })
+      }
 
       let button_ocean= ocean_stats_button.selectAll("g.button")
                                       .data(["Oceans' statistics"])
@@ -369,25 +499,50 @@ html, body {
                                       .style("cursor","pointer")
                                       .on("click", function (d, i) {
                                         d3.event.preventDefault();
-                                        console.log(parseInt(x0_ocean), parseInt(y0_ocean))
                                         popup = d3.select("#map-holder")
                                             .append("div")
                                             .attr("class", "popup")
+                                            .attr("id", "main_panel")
                                             .style("left", parseInt(window.innerWidth/2-window_width/2)+"px")
                                             .style("top", parseInt(window.innerHeight-window_height)+"px")
                                             .style("height", window_height+"px")
                                             .style("width", window_width+"px")
                                             .style("background-color", "powderblue")
-                                        // popup.append("h2").text(d.display_division);
-                                          popup.append("p").text("this is text")
+                                        popup_title = d3.select("#map-holder")
+                                            .append("div")
+                                            .attr("class", "popup")
+                                            .attr("id", "title")
+                                            .style("left", parseInt(window.innerWidth/2-window_width/2)+"px")
+                                            .style("top", parseInt(window.innerHeight-window_height)-30+"px")
+                                            .style("height", 30+"px")
+                                            .style("width", 420+"px")
+                                            .style("background-color", "white")
+                                          popup_title.append("strong").append("em").text("--Average amount of garbage per expedition point--")
+                                          .style('font-size', '24px')
+                                          .style('font-weight', 'bold')
+                                          svg_oceans = popup.append("svg").
+                                          attr("class", "svg_ocean");
+                                          
+                                          offset_x =window_height-50
+                                          //offset_y=window_width
+                                          svg_oceans.append('g')
+                                         .attr("class", "axis_x")
+                                         .attr("transform", "translate(60, " + offset_x + ")")
+                                         .call(x_axis);
+                                          svg_oceans.append('g').attr("class", "axis_y")
+                                          .attr("transform", "translate(" + "990" + ",-330)")
+                                          .call(customYAxis)
+                                          d3.csv('ocean_overview.csv', plot_data);
                                           popup.append("div")
                                           .append("a")
                                           .attr("href",'#')
                                           .attr("class", "close-thik")
                                           .on("click", function(){
                                             d3.event.preventDefault();
-                                            d3.select(".popup").remove();
+                                            d3.select("#main_panel").remove();
+                                            d3.select("#title").remove();
                                           })
+                                            
                                       });
 
       button_ocean.append("rect")

@@ -482,6 +482,7 @@ html, body {
                    }
                    this_path.style("cursor", "default");
                  }).on('mouseover', function(d){
+                  console.log(d)
                    let this_path = d3.select(this);
                    let e_id = this_path.attr("id");
                    if(SELECTED_EXP_ID !== e_id) {
