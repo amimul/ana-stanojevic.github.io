@@ -13,138 +13,27 @@
     <script type="text/javascript" src="src\map.js"></script>
 
     <!-- Expeditions -->
-    <!--link rel="stylesheet" type="text/css" href="src\expeditions.css"-->
-    <script type="text/javascript" src="src\expeditions.js"></script>
+    <link rel="stylesheet" type="text/css" href="src\expeditions.css">
+    <script type="text/javascript" src="src\expedition.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="src\pack_layout.css">
+    <script type="text/javascript" src="src\pack_layout.js"></script>
 
     <!--Tool-tip-->
     <!--script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script-->
     <!--script src="src\d3-tip\d3-tip.js"></script-->
-    <style>
 
-    .tooltip {
-      position: absolute;
-      text-align: center;
-      width: 60px;
-      height: 12px;
-      padding: 8px;
-      margin-top: -20px;
-      font: 10px sans-serif;
-      background: #ddd;
-      pointer-events: none;
-    }
-
-    .d3-tip {
-      line-height: 1;
-      padding: 6px;
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      border-radius: 4px;
-      font-size: 12px;
-    }
-
-body {
-  margin: 0;
-  font-family: 'Yanone Kaffeesatz', sans-serif;
-  font-weight: 200;
-  font-size: 17px;
-}
-
-path:hover {
-	fill-opacity: .7;
-}
-
-.popup{
-  z-index: 1;
-  position: absolute;
-}
-
-[class*='close-'] {
-  color: #777;
-  font: 30px/100% arial, sans-serif;
-  position: absolute;
-  right: 5px;
-  text-decoration: none;
-  text-shadow: 0 1px 0 #fff;
-  top: 5px;
-}
-
-.close-thik:after {
-  content: '✖'; /* UTF-8 symbol */
-}
-
-/* Style for Custom Tooltip */
-div.tooltip {
- 	position: absolute;
-	text-align: center;
-	width: 60px;
-	height: 28px;
-	padding: 2px;
-	font: 12px sans-serif;
-	background: white;
-	border: 0px;
-	border-radius: 8px;
-	pointer-events: none;
-}
-
-#map-holder {
-  width: 100vw;
-  height: 100vh;
-}
-svg rect {
-  fill: #2A2C39;   /* map background colour */
-}
-.country{
-  fill: lightblue;   /* country colour */
-  stroke: #2A2C39; /* country border colour */
-  stroke-width: 1; /* country border width */
-}
-.country-on{
-  fill: #4B5358;   /* highlight colour for selected country */
-}
-
-/* Legend Position Style */
-.legend {
-	position:absolute;
-	left:800px;
-	top:350px;
-}
-
-.countryLabel{
-  display: none;   /* hide all country labels by default */
-}
-.countryName{
-  fill: #FFFAFF;   /* country label text colour */
-}
-.countryLabelBg{
-  fill: #30BCED;   /* country label background colour */
-}
-
-svg {
-  background: lightBlue;
-}
-  .line {
-    fill: none;
-    stroke: yellow;
-    stroke-width: 1.5;
-    shape-rendering: crispEdges;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-  }
-
-html, body {
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-}
-html, body {
-    max-height: 100% !important;
-    overflow-y: hidden !important;
-}
-</style>
   </head>
 
   <body>
     <div id="map-holder"></div>
     <script type="text/javascript">
+
+      d3.selection.prototype.moveToFront = function() {
+        return this.each(function(){
+        this.parentNode.appendChild(this);
+        });
+      };
 
       // Full world map is 2:1 ratio
       // Using 12:5 because we will crop top and bottom of map
@@ -302,9 +191,6 @@ html, body {
               return "country" + d.properties.iso_a3;
             })
             .attr("class", "country")
-      //      .attr("stroke-width", 10)
-      //      .attr("stroke", "#ff0000")
-            // add a mouseover action to show name label for feature/country
             .on("mouseover", function(d, i) {
                 d3.select("#countryLabel" + d.properties.iso_a3).style("display", "block");
             })
@@ -329,24 +215,21 @@ html, body {
               return "countryLabel" + d.properties.iso_a3;
             })
             .attr("transform", function(d) {
-              return (
-                "translate(" + path.centroid(d)[0] + "," + path.centroid(d)[1] + ")"
-              );
+              return "translate(" + path.centroid(d)[0] + "," + path.centroid(d)[1] + ")";
             })
-            // add mouseover functionality to the label
             .on("mouseover", function(d, i) {
                 d3.select(this).style("display", "block");
             })
             .on("mouseout", function(d, i) {
                  d3.select(this).style("display", "none");
-           })
+            })
             // add an onlcick action to zoom into clicked country
             .on("click", function(d, i) {
                 d3.selectAll(".country").classed("country-on", false);
                 d3.select("#country" + d.properties.iso_a3).classed("country-on", true);
               boxZoom(path.bounds(d), path.centroid(d), 20);
             });
-          // add the text to the label group showing country name
+
           countryLabels
             .append("text")
             .attr("class", "countryName")
@@ -370,71 +253,59 @@ html, body {
             .attr("height", function(d) {
               return d.bbox.height;
             });
+
           initiateZoom();
 
-          //58 csv files with data
-          const expedition_files = expeditions.csv.generate_file_list(30
+          const expedition_files = generate_files(30
              , "data/expeditions/expedition_");
 
           function multiCsv(files, callback) {
-            let results = [];
-            let error = "";
-            let filesLength = (files || []).length;
-            let callbackInvoked = false;
+            let files_length = 0;
+            for(var i in files) {
+              files_length += files[i].length;
+            }
 
-            files.forEach(function(csv_file){
-              d3.text(csv_file, function(error, raw) {
-                //TODO: remove condition after make expedition files in consistent form
-                if(error) {return;}
-                let dsv = d3.dsvFormat(';')
-                let data = dsv.parse(raw);
-                if (data === null) {
-                  error += "Error csv reading" + csv_file + "\n";
+            let results = new Map();
+            let read_files = 0;
+
+            for(var k in files) {
+              for(var i in files[k]) {
+
+                let file_name = files[k][i];
+                let ocean = k;
+                if(!results.get(ocean)) {
+                  results.set(ocean, []);
                 }
-                else {
-                  results.push(data);
-                }
-                //all files are read
-                if (!callbackInvoked && (error || results.length === filesLength)) {
-                  if (error) {
-                    callback(error, null); // might want to send partial results here
-                  }
-                  else {
+
+                d3.text(file_name, function(error, raw) {
+                  if(error) { return; }
+                  let dsv = d3.dsvFormat(';');
+                  let data = dsv.parse(raw);
+                  results.get(ocean).push(data);
+                  read_files += 1;
+
+                  if(read_files === files_length) {
                     callback(null, results);
                   }
-                  callbackInvoked = true;
-                }
-              });
-            });
+                });
+              }
+            }
           };
-
-          function get_coord(d, coord) {
-            const xy = {'x':0, 'y':1};
-
-            lat = parseFloat(d.Latitude.replace(',','.').replace(' ',''));
-            long = parseFloat(d.Longitude.replace(',','.').replace(' ',''));
-            return projection([long, lat])[xy[coord]];
-          }
-
-          //further we will have expedition_id property
-          function get_expedition_id(data) {
-            let id_str = (data[0].Info.indexOf('-') != -1) ?
-              data[0].Info.split('-')[0] : data[0].Info;
-
-            return id_str.replace(/[/ ]+/g, "_");
-          }
 
           function cancel_highlight(map) {
             if(SELECTED_EXP_ID == null) {
               return;
             }
 
-            let e_data = expedition_data.get(SELECTED_EXP_ID)
             map.selectAll("path#" + SELECTED_EXP_ID)
                .style("stroke", "yellow").style("stroke-width", "1.5");
 
-            map.selectAll("circle#" + SELECTED_EXP_ID)
-               .style("stroke-width","1");
+            const N = expedition_data.get(SELECTED_EXP_ID).length;
+            for(var i = 0; i < N; ++i) {
+              map.select("circle#ex_point_" + i +"_" + SELECTED_EXP_ID)
+                 .style("stroke-width","1");
+            }
+
             SELECTED_EXP_ID = null;
           }
 
@@ -444,57 +315,217 @@ html, body {
             }
 
             SELECTED_EXP_ID = exp_id;
-
-            map.selectAll("path#" + SELECTED_EXP_ID)
+            let paths = map.select("path#" + SELECTED_EXP_ID)
                .style("stroke", "white")
                .style("stroke-width","2");
 
-            map.selectAll("circle#" + SELECTED_EXP_ID)
-               .style("stroke-width","2");
+            const N = expedition_data.get(exp_id).length;
+            for(var i = 0; i < N; ++i) {
+              map.select("circle#ex_point_" + i+"_" + SELECTED_EXP_ID)
+                 .style("stroke-width","2");
+            }
+          }
 
-            //TODO: display statistics or general information
+          const diameter = 250;
+          var color = d3.scaleSequential(d3.interpolateMagma)
+              .domain([-4, 4]);
+
+          function drawData(data, position, map_svg) {
+
+            let ocean_json_str = JSON.stringify(data);
+            let ocean_json = JSON.parse(ocean_json_str);
+
+            var packLayout = d3.pack()
+              .size([diameter, diameter]).padding(3);
+
+            let root = d3.hierarchy(ocean_json, function(d){ return d.children; })
+            .sum(function(d) {
+              return d.total_cd;
+            })
+            .sort(function(d1, d2){
+              return d2.total_cd - d1.total_cd;
+            });
+
+            packLayout(root);
+
+            var focus = root,
+                nodes = root.descendants(),
+                view;
+
+            var g = map_svg.append("g").attr("id", "pack_layout")
+              .attr("transform", "translate(" +
+                position[0] + "," +
+                position[1] + ")");
+
+            var node = g.selectAll("g")
+              .data(nodes)
+              .enter().append("g")
+              .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+              //.attr("class", function(d) { return d.parent ? (d.children ? "node node--leaf": "node") : "node node--root"; })
+              .style("opacity", function(d){ return d.parent ? (d.children ? 0.7 : 1.0) : 0.2; })
+              .each(function(d) { d.node = this; })
+              .on("click", function(d) {
+                if (focus !== d) {
+                  zoom(d);
+                  d3.event.stopPropagation();
+                }
+              })
+              .on("mouseover", function(d) {
+                if(!d.parent) {return;}
+
+                d3.select(this).style("stroke", "black").style("stroke-width", "1.5");
+                if(d.children) {
+                  highlight(map_svg, d.data.name);
+                }
+              })
+              .on("mouseout", function(d) {
+                if(!d.parent) {return;}
+
+                d3.select(this).style("stroke", "none");
+                if(d.children) {
+                  cancel_highlight(map_svg);
+                }
+
+              });
+
+            g.on("click", function() { zoom(root); });
+
+            var circle = node.append("circle")
+              .attr("r", function(d) { return d.r; })
+              .attr("id", function(d) { return d.data.name; })
+              .style("fill", function(d) {
+                return color(d.depth);
+              })
+              .on("mouseover",function(d){
+                if(!d.children) {
+                  const point_id = "ex"+d.data.name.substring(2, d.data.name.length);
+                  d3.select("circle#"+ point_id).attr("r", 5)
+                    .style("fill", "white")
+                    .style("stroke-width", "3");
+                }
+              })
+              .on("mouseout", function(d) {
+                if(!d.children) {
+                  const point_id = "ex"+d.data.name.substring(2, d.data.name.length);
+                  d3.select("circle#"+ point_id).attr("r", 3)
+                    .style("fill", "red")
+                    .style("stroke-width", "1");
+                }
+              });
+
+            // initialize view by this call
+            zoomTo([root.x, root.y, root.r * 2]);
+
+            function zoom(d) {
+              var focus0 = focus; focus = d;
+              var transition = d3.transition()
+                  .duration(d3.event.altKey ? 7500 : 750)
+                  .tween("zoom", function(d) {
+                    let margin_y = 1;
+
+                    //var i = d3.interpolateZoom(view, [focus.x-focus.r*1.2/2, focus.y-focus.r*1.2/2+margin_y, focus.r*1.2]);
+                    var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);
+                    return function(t) { zoomTo(i(t)); };
+                  });
+            }
+
+            function zoomTo(v) {
+              var k = diameter / v[2]; view = v;
+              node.attr("transform", function(d) {
+                return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")";
+              });
+              circle.attr("r", function(d) { return d.r * k; });
+            }
+          }
+
+          function hovered(hover) {
+            return function(d) {
+              d3.selectAll(d.ancestors().map(function(d) { return d.node; })).classed("node--hover", hover);
+            };
+          }
+
+          function drawAll(data_list, positions, map_svg) {
+            for(var i in data_list) {
+              drawData(data_list[i], positions[i], map_svg);
+            }
           }
 
           multiCsv(expedition_files, function (err, results) {
-            let i = 1;
+
+            let data_list = [];
+            let positions = [];
+
+            for (var [key, e_data_list] of results) {
+
+              data_list.push(new Ocean(key, e_data_list));
+              const ex_positions = e_data_list.map(data => compute_ex_position(data));
+
+              let x_pos = 0, y_pos = 0;
+              for(var i_pos in ex_positions) {
+                x_pos += ex_positions[i_pos][0];
+                y_pos += ex_positions[i_pos][1];
+              }
+
+              if(key === "atlantic") {
+                y_pos -= 500;
+                x_pos -= 550;
+              }
+
+              if(key === "indian") {
+                y_pos -= 1000;
+                x_pos -= 4500;
+              }
+
+              if(key === "pacific") {
+                y_pos += 500;
+                x_pos -= 5000;
+              }
+
+              if(key === "mediterranean") {
+                y_pos += 220;
+                x_pos += 200;
+              }
+
+              positions.push([x_pos/ex_positions.length, y_pos/ex_positions.length]);
+            }
+
             let map = d3.select("#map");//.on('mousemove', mousemoved);
 
-            results.forEach(function(data) {
-              let expedition_id = get_expedition_id(data);
-              let exists = typeof(expedition_data.get(expedition_id)) !== 'undefined';
+            let i = 1;
+            results.forEach(function(data_list, ocean, mapObj) {
+              data_list.forEach(function(data) {
+                let expedition_id = get_expedition_id(data);
+                let exists = typeof(expedition_data.get(expedition_id)) !== 'undefined';
+                if(exists) {
+                  expedition_id = expedition_id + i;
+                  i += 1;
+                }
+                expedition_data.set(expedition_id, data);
 
-              if(exists) {
-                expedition_id = expedition_id + i;
-                i += 1;
-              }
-              expedition_data.set(expedition_id, data);
+                map.append("path")
+                   .datum(data)
+                   .attr("class", "line")
+                   .attr("id", expedition_id)
+                   .attr("d", line)
+                   .on('mouseout', function(d) {
+                     let this_path = d3.select(this);
+                     let e_id = this_path.attr("id");
+                     if(SELECTED_EXP_ID === e_id) {
+                         cancel_highlight(map);
+                     }
+                     this_path.style("cursor", "default");
+                   })
+                   .on('mouseover', function(d){
+                     let this_path = d3.select(this);
+                     let e_id = this_path.attr("id");
+                     highlight(map, e_id);
 
-              map.append("path")
-                 .datum(data)
-                 .attr("class", "line")
-                 .attr("id", expedition_id)
-                 .attr("d", line)
-                 .on('mouseout', function(d) {
-                   let this_path = d3.select(this);
-                   let e_id = this_path.attr("id");
-                   if(SELECTED_EXP_ID === e_id) {
-                       cancel_highlight(map);
-                   }
-                   this_path.style("cursor", "default");
-                 }).on('mouseover', function(d){
-                  console.log(d)
-                   let this_path = d3.select(this);
-                   let e_id = this_path.attr("id");
-                   if(SELECTED_EXP_ID !== e_id) {
-                       highlight(map, expedition_id);
-                   }
+                     this_path.style("cursor", "pointer");
+                   });
 
-                   this_path.style("cursor", "pointer");
-                 });
-
-              map.append("g")
-                .selectAll("circle")
-                .data(data).enter().append("circle")
+                map.append("g")
+                  .selectAll("circle")
+                  .data(data).enter().append("circle")
                   .attr("cx", function(d){
                     return get_coord(d, 'x');
                   })
@@ -502,35 +533,55 @@ html, body {
                     return get_coord(d, 'y');
                   })
                   .attr("r", 3)
-                  .attr("id", expedition_id)
+                  .attr("id", function(d, i){
+                    return "ex_point_"+i+"_"+expedition_id;
+                  })
                   .attr("fill","red")
                   .style("stroke", "white")
                   .style("stroke-width","1")
                   .on('mouseover', function(d) {
                     let this_circle = d3.select(this);
                     let e_id = this_circle.attr("id");
-                    if(SELECTED_EXP_ID !== e_id) {
-                        highlight(map, expedition_id);
+
+                    if(!e_id.includes(SELECTED_EXP_ID)) {
+                      let terms = e_id.split('_');
+                      let curr_e_id = terms[terms.length-1];
+                      highlight(map, curr_e_id);
                     }
 
-                    this_circle.style("cursor", "pointer")
-                               .attr("r", 4).style("fill", "blue");
+                    this_circle.style("cursor", "pointer");
+                    this_circle.attr("r", 5).style("fill", "white");
+
+                    const point_id = this_circle.attr("id")
+                    const stat_id = "st"+point_id.substring(2, point_id.length);
+                    d3.select("circle#"+ stat_id)
+                      .style("stroke", "black")
+                      .style("stroke-width", "1.5");
                   })
                   .on('mouseout',function (d) {
                     let this_circle = d3.select(this);
                     let e_id = this_circle.attr("id");
-                    if(SELECTED_EXP_ID === e_id) {
-                        cancel_highlight(map);
+                    let terms = e_id.split('_');
+                    let curr_e_id = terms[terms.length-1];
+                    if(SELECTED_EXP_ID === curr_e_id) {
+                      cancel_highlight(map);
                     }
+                    this_circle.style("cursor", "default").style("fill", "red");
+                    this_circle.attr("r", 3);
 
-                    this_circle.style("cursor", "default")
-                               .attr("r", 3).style("fill", "red");
+                    const point_id = this_circle.attr("id");
+                    const stat_id = "st"+point_id.substring(2, point_id.length);
+                    d3.select("circle#"+ stat_id)
+                      .style("stroke", "none");
                   });
+              });
             });
+
+            drawAll(data_list, positions, map);
           });
 
 
-          let ocean_stats_button= svg.append("g").attr("id","ocean_stats") 
+          let ocean_stats_button= svg.append("g").attr("id","ocean_stats")
           let defaultColor_ocean= "#DC143C"
           let hoverColor_ocean= "#B22222"
           let pressedColor_ocean= "#FFFF00"

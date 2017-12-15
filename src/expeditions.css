@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  font-weight: 200;
+  font-size: 17px;
+}
+
+path:hover {
+	fill-opacity: .7;
+}
+
+.popup{
+  z-index: 1;
+  position: absolute;
+}
+
+[class*='close-'] {
+  color: #777;
+  font: 30px/100% arial, sans-serif;
+  position: absolute;
+  right: 5px;
+  text-decoration: none;
+  text-shadow: 0 1px 0 #fff;
+  top: 5px;
+}
+
+.close-thik:after {
+  content: '✖'; /* UTF-8 symbol */
+}
+
+#map-holder {
+  width: 100vw;
+  height: 100vh;
+}
+
+svg rect {
+  fill: #2A2C39;   /* map background colour */
+}
+svg {
+  background: lightBlue;
+}
+
+.country{
+  fill: lightblue;   /* country colour */
+  stroke: #2A2C39; /* country border colour */
+  stroke-width: 1; /* country border width */
+}
+
+.country-on{
+  fill: #4B5358;   /* highlight colour for selected country */
+}
+
+/* Legend Position Style */
+.legend {
+	position:absolute;
+	left:800px;
+	top:350px;
+}
+
+.countryLabel{
+  display: none;   /* hide all country labels by default */
+}
+
+.countryName{
+  fill: #FFFAFF;   /* country label text colour */
+}
+
+.countryLabelBg{
+  fill: #30BCED;   /* country label background colour */
+}
+
+.line {
+  fill: none;
+  stroke: yellow;
+  stroke-width: 1.5;
+  shape-rendering: crispEdges;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+html, body {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+}
