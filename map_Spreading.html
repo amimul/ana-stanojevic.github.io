@@ -6,7 +6,7 @@
     <title>Spreading Map</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-     <script src="http://d3js.org/d3.v4.min.js"></script>
+     <script src="https://d3js.org/d3.v4.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Yanone+Kaffeesatz:200" rel="stylesheet">
     <style>
 
@@ -427,25 +427,27 @@ html, body {
                                               .style("cursor","pointer")
                                               .on("click",function(d,i) {
                                                   d3.select(this.parentNode).selectAll("rect").attr("fill",defaultColor)
-                                                  d3.select(this).select("rect").attr("fill",pressedColor)
+                                            d3.select(this).select("rect").attr("fill",pressedColor).style("fill",pressedColor)
                                                   var url = 'map_'+d+'.html'
                                                   console.log(url)
                                                   // $(location).attr('href', url);
                                                   window.location.assign(url); 
                                               })
                                               .on("mouseover", function() {
-                                                  if (d3.select(this).select("rect").attr("fill") != pressedColor) {
-                                                      d3.select(this)
-                                                          .select("rect")
-                                                          .attr("fill",hoverColor);
-                                                  }
+                                                   if (d3.select(this).select("rect").attr("fill") != pressedColor) {
+                                                d3.select(this)
+                                                    .select("rect")
+                                                    .attr("fill",hoverColor)
+                                                    .style("fill",hoverColor)
+                                            }
                                               })
                                               .on("mouseout", function() {
-                                                  if (d3.select(this).select("rect").attr("fill") != pressedColor) {
-                                                      d3.select(this)
-                                                          .select("rect")
-                                                          .attr("fill",defaultColor);
-                                                  }
+                                                 if (d3.select(this).select("rect").attr("fill") != pressedColor) {
+                                                d3.select(this)
+                                                    .select("rect")
+                                                    .attr("fill",defaultColor)
+                                                    .style("fill",defaultColor);
+                                            }
                                               })
             var bWidth= 100; //button width
             var bHeight= 25; //button height
@@ -460,7 +462,12 @@ html, body {
                         .attr("y",function(d,i) {return y0+(bHeight+bSpace)*i;})
                         .attr("rx",5) //rx and ry give the buttons rounded corners
                         .attr("ry",5)
-                        .attr("fill",'defaultColor')
+                        .attr("fill",function(d,i){
+                    if (i==2) return pressedColor;
+                      return defaultColor})
+                  .style("fill",function(d,i){
+                    if (i==2) return pressedColor;
+                      return defaultColor})
 
             buttonGroups.append("text")
                         .attr("class","buttonText")
