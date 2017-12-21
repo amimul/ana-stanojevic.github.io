@@ -127,6 +127,8 @@ html, body {
   <body>
     <div id="map-holder"></div>
     <script type="text/javascript"> 
+
+    //SECTION I - CREATE MAP
       // DEFINE VARIABLES
       // Define size of map group
       // Full world map is 2:1 ratio
@@ -134,18 +136,18 @@ html, body {
       w = 3000;
       h = 1250;
       // variables for catching min and max zoom factors
-      var minZoom;
-      var maxZoom;
+      let minZoom;
+      let maxZoom;
       // DEFINE FUNCTIONS/OBJECTS
       // Define map projection
-      var projection = d3
+      let projection = d3
         .geoEquirectangular()
         .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
         .scale([w / (2 * Math.PI)]) // scale to fit group width
         .translate([w / 2, h / 2]) // ensure centred in group
       ;
       // Define map path
-      var path = d3
+      let path = d3
         .geoPath()
         .projection(projection)
       ;
@@ -160,7 +162,7 @@ html, body {
         ;
       }
       // Define map zoom behaviour
-      var zoom = d3
+      let zoom = d3
         .zoom()
         .on("zoom", zoomed)
       ;
@@ -243,7 +245,7 @@ html, body {
       });
 
       // create an SVG
-      var svg = d3
+      let svg = d3
         .select("#map-holder")
         .append("svg")
         // set to the same size as the "map-holder" div
@@ -253,10 +255,6 @@ html, body {
     .attr("fill", "pink")
         .call(zoom)
       ;
-// var div = d3.select("#map-holder")
-// 		    .append("div")   
-//     		.attr("class", "tooltip")               
-//     		.style("opacity", 0);
 
       // get map data
       d3.json(
@@ -357,136 +355,128 @@ html, body {
       let defaultColor_ocean= "#7777BB"
       let hoverColor_ocean= "#0000ff"
       let pressedColor_ocean= "#000077"
-      var bWidth_ocean= 200; //button width
-      var bHeight_ocean=50; //button height
-      var x0_ocean= window.innerWidth/2 - bWidth_ocean/2; //x offset
-      var y0_ocean= window.innerHeight-5-bHeight_ocean; //y offset
+      let bWidth_ocean= 200; //button width
+      let bHeight_ocean=50; //button height
+      let x0_ocean= window.innerWidth/2 - bWidth_ocean/2; //x offset
+      let y0_ocean= window.innerHeight-5-bHeight_ocean; //y offset
 
       const window_height = 350
       const window_width = 1000
 
 
-    let svg_oceans;
-
-      let button_ocean= ocean_stats_button.selectAll("g.button")
-                                      .data(["Oceans' statistics"])
-                                      .enter()
-                                      .append("g")
-                                      .attr("class","button")
-                                      .attr("id", "oceans_button")
-                                      .style("cursor","pointer")
-                                        .on("mouseover", function() {
-                                            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
-                                                d3.select(this)
-                                                    .select("rect")
-                                                    .attr("fill",hoverColor)
-                                                    .style("fill",hoverColor)
-                                            }
-                                        })
-                                        .on("mouseout", function() {
-                                            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
-                                                d3.select(this)
-                                                    .select("rect")
-                                                    .attr("fill",defaultColor)
-                                                    .style("fill",defaultColor);
-                                            }
-                                        })
-                                      .on("click", function (d, i) {
-
-                                         d3.select(this).select("rect").attr("fill",pressedColor).style("fill",pressedColor)
-                                        d3.event.preventDefault();
-                                        popup = d3.select("#map-holder")
-                                            .append("div")
-                                            .attr("class", "popup")
-                                            .attr("id", "main_panel")
-                                            .style("left", parseInt(window.innerWidth/2-window_width/2)+"px")
-                                            .style("top", parseInt(window.innerHeight-window_height-350)+"px")
-                                            .style("height", window_height+180+"px")
-                                            .style("width", window_width+50+"px")
-                                            .style("background-color", "transparent")
-                                            .style("fill", "transparent")
-
-                                          svg_oceans = popup.append("svg")
-                                          .attr('class', 'chart')
-                                          .style("background-color", "transparent")
-                                            .style("fill", "transparent")
-                                            .style("height", window_height+"px")
-                                            .style("width", window_width+200+"px")
-                                            .attr("transform","translate(0,120)")
 
 
-                                      default_c='green'
-                                      pressed_c='red'
-                                      hovered_c='yellow'
-                       let buttonGroups= svg_oceans.selectAll("g.button")
-                                        .data([ "\u2696",  "\uD800\uDD39"])
-                                        .enter()
-                                        .append("g")
-                                        .attr("class","button")
-                                        .attr("id", function(d){return d})
-                                        .style("cursor","pointer")
-                                        .on("click",function(d,i) {
-                                            d3.select(this.parentNode).selectAll(".rect_but").style("fill",default_c).attr("fill",default_c);
-                                            d3.select(this).select("rect").style("fill",pressed_c).attr("fill",pressed_c)
-                                            for (let i=0; i<16; i++) {
-                                                if (i<8) d3.select('#rect'+i).remove()
-                                                d3.select('#link'+parseInt(i/4)+parseInt(4+i%4)).remove()
-                                              }
-                                            
-                                            if (d3.select(this).text()=="\uD800\uDD39") plot_overview("cd", " billion")
-                                            else plot_overview("wd", " t")
 
-                                        })
-                                        .on("mouseover", function() {
-                                            if (d3.select(this).select(".rect_but").attr("fill") != pressed_c) {
-                                                d3.select(this)
-                                                    .select("rect")
-                                                    .attr("fill",hovered_c)
-                                                    .style("fill",hovered_c);
-                                            }
-                                        })
-                                        .on("mouseout", function() {
-                                          
-                                            if (d3.select(this).select(".rect_but").attr("fill") != pressed_c) {
-                                                d3.select(this)
-                                                    .select("rect")
-                                                    .attr("fill",default_c)
-                                                    .style("fill",default_c);
-                                            }
-                                        })
-                                      var bWidth= 40; //button width
-                                      var bHeight= 40; //button height
-                                      var bSpace= 10; //space between buttons
-                                      var x0= 1050; //x offset
-                                      var y0= 50; //y offset
-                                      
-                                      buttonGroups.append("rect")
-                                                  .attr("class","rect_but")
-                                                  .attr("width",bWidth)
-                                                  .attr("height",bHeight)
-                                                  .attr("x",x0)
-                                                  .attr("y",function(d,i) {return y0+(bHeight+bSpace)*i;})
-                                                  .attr("rx",5) //rx and ry give the buttons rounded corners
-                                                  .attr("ry",5)
-                                                  .style("fill",function(d,i){if (i==0) return pressed_c; return default_c;})
-                                                  .attr("fill", function(d,i){if (i==0) return pressed_c; return default_c;})
-
-                                      buttonGroups.append("text")
-                                                  .attr("class","buttonText_slider")
-                                                  .attr("font-family","FontAwesome")
-                                                  .attr("x",x0 + bWidth/2)
-                                                  .attr("y",function(d,i) { return y0+ (bHeight+bSpace)*i + bHeight/2; })
-                                                  .attr("text-anchor","middle")
-                                                  .attr("dominant-baseline","central")
-                                                  .attr("fill","black")
-                                                  .style("font-size", "35px")
-                                                  .text(function(d) {return d;})
-                                            
-
-                                
-                  function plot_overview(mark, unit){
-
-                    let graph = {"nodes":[
+    // SECTION II- CREATE STATISTICS
+      let svg_oceans;
+      let button_ocean = ocean_stats_button.selectAll("g.button")
+                          .data(["Oceans' statistics"])
+                          .enter()
+                          .append("g")
+                          .attr("class","button")
+                          .attr("id", "oceans_button")
+                          .style("cursor","pointer")
+                          .on("mouseover", function() {
+                            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
+                              d3.select(this)
+                                .select("rect")
+                                .attr("fill",hoverColor)
+                                .style("fill",hoverColor)
+                            }
+                          })
+                          .on("mouseout", function() {
+                            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
+                              d3.select(this)
+                                .select("rect")
+                                .attr("fill",defaultColor)
+                                .style("fill",defaultColor);
+                            }
+                          })
+                          .on("click", function (d, i) {
+                            d3.select(this).select("rect").attr("fill",pressedColor).style("fill",pressedColor)
+                            d3.event.preventDefault();
+                            //add pop up window
+                            popup = d3.select("#map-holder")
+                              .append("div")
+                              .attr("class", "popup")
+                              .attr("id", "main_panel")
+                              .style("left", parseInt(window.innerWidth/2-window_width/2)+"px")
+                              .style("top", parseInt(window.innerHeight-window_height-350)+"px")
+                              .style("height", window_height+180+"px")
+                              .style("width", window_width+50+"px")
+                              .style("background-color", "transparent")
+                              .style("fill", "transparent")
+                            svg_oceans = popup.append("svg")
+                              .attr('class', 'chart')
+                              .style("background-color", "transparent")
+                              .style("fill", "transparent")
+                              .style("height", window_height+"px")
+                              .style("width", window_width+200+"px")
+                              .attr("transform","translate(0,120)")
+                            default_c='green'
+                            pressed_c='red'
+                            hovered_c='yellow'
+                            //add 2 buttons on a chart
+                            let buttonGroups= svg_oceans.selectAll("g.button")
+                                                .data([ "\u2696",  "\uD800\uDD39"])
+                                                .enter()
+                                                .append("g")
+                                                .attr("class","button")
+                                                .attr("id", function(d){return d})
+                                                .style("cursor","pointer")
+                                                .on("click",function(d,i) {
+                                                  d3.select(this.parentNode).selectAll(".rect_but").style("fill",default_c).attr("fill",default_c);
+                                                  d3.select(this).select("rect").style("fill",pressed_c).attr("fill",pressed_c)
+                                                  for (let i=0; i<16; i++) {
+                                                    if (i<8) d3.select('#rect'+i).remove()
+                                                    d3.select('#link'+parseInt(i/4)+parseInt(4+i%4)).remove()
+                                                  }
+                                                  if (d3.select(this).text()=="\uD800\uDD39") plot_overview("cd", " billion")
+                                                  else plot_overview("wd", " t")
+                                                })
+                                                .on("mouseover", function() {
+                                                  if (d3.select(this).select(".rect_but").attr("fill") != pressed_c) {
+                                                      d3.select(this)
+                                                        .select("rect")
+                                                        .attr("fill",hovered_c)
+                                                        .style("fill",hovered_c);
+                                                  }
+                                                })
+                                                .on("mouseout", function() {                           
+                                                    if (d3.select(this).select(".rect_but").attr("fill") != pressed_c) {
+                                                        d3.select(this)
+                                                          .select("rect")
+                                                          .attr("fill",default_c)
+                                                          .style("fill",default_c);
+                                                    }
+                                                })
+                            let bWidth= 40; //button width
+                            let bHeight= 40; //button height
+                            let bSpace= 10; //space between buttons
+                            let x0= 1050; //x offset
+                            let y0= 50; //y offset   
+                            buttonGroups.append("rect")
+                              .attr("class","rect_but")
+                              .attr("width",bWidth)
+                              .attr("height",bHeight)
+                              .attr("x",x0)
+                              .attr("y",function(d,i) {return y0+(bHeight+bSpace)*i;})
+                              .attr("rx",5) //rx and ry give the buttons rounded corners
+                              .attr("ry",5)
+                              .style("fill",function(d,i){if (i==0) return pressed_c; return default_c;})
+                              .attr("fill", function(d,i){if (i==0) return pressed_c; return default_c;})
+                            buttonGroups.append("text")
+                              .attr("class","buttonText_slider")
+                              .attr("font-family","FontAwesome")
+                              .attr("x",x0 + bWidth/2)
+                              .attr("y",function(d,i) { return y0+ (bHeight+bSpace)*i + bHeight/2; })
+                              .attr("text-anchor","middle")
+                              .attr("dominant-baseline","central")
+                              .attr("fill","black")
+                              .style("font-size", "35px")
+                              .text(function(d) {return d;})   
+                            function plot_overview(mark, unit){
+                              let graph = {"nodes":[
                                          {"name": '0.33-1mm'},
                                          {"name": '1-4.75mm'},
                                          {"name": '4.76-200mm'},
@@ -494,8 +484,7 @@ html, body {
                                          {"name":"Atlantic"},
                                         {"name":"Indian"},
                                          {"name":"Mediterranean"},
-                                          {"name":"Pacific"}
-                                         ], 
+                                          {"name":"Pacific"}], 
                                       "links":[
                                         {"source":0, "target":4, "value":0},
                                         {"source":1, "target":4, "value":0},
@@ -515,74 +504,60 @@ html, body {
                                         {"source":3, "target":7, "value":0}
                                         ]} 
 
-                      d3.csv('ocean_overview.csv', create_graph);
-                        function create_graph(data){
+                            d3.csv('ocean_overview.csv', create_graph);
+                            function create_graph(data){
                               for (let i=0; i< data.length; i++){
                                 tmp=1
                                 for (let k=0; k<graph.links.length; k++){
-                                    if (graph.links[k].target==i+4){
-                                      graph.links[k].value=data[i][mark+tmp]
-                                      tmp+=1
-                                    }
+                                  if (graph.links[k].target==i+4){
+                                    graph.links[k].value=data[i][mark+tmp]
+                                    tmp+=1
+                                  }
                                 }
-                           }
-
-                            var 
-                                width = 1000
-                                height = 350
-                            var formatNumber = d3.format(",.0f"),
+                               }
+                            let width = 1000, height = 350
+                            let formatNumber = d3.format(",.0f"),
                                 format = function(d) { return formatNumber(d) + unit; },
                                 color = d3.schemeCategory10
-
-                            var sankey = d3.sankey()
-                                .nodeWidth(15)
-                                .nodePadding(10)
-                                .extent([[1, 1], [width - 1, height - 6]]);
-
-                            var link = svg_oceans.append("g")
-                                .attr("class", "links")
-                                //.attr("fill", "gray")
-                                .attr("stroke", "gray")
-                                .attr("stroke-opacity", 0.5)
-                                //.style("fill", "gray")
-                              .selectAll("path");
-
-                            var node = svg_oceans.append("g")
-                                .attr("class", "nodes")
-                                .attr("font-family", "sans-serif")
-                                .attr("font-size", 10)
-                              .selectAll("g");
-
-                              sankey(graph);
-
-                              link = link
-                                .data(graph.links)
-                                .enter().append("path")
-                                  .attr("id", function(d){return "link"+d.source.index+d.target.index})
-                                  .attr("d", d3.sankeyLinkHorizontal())
-                                  .attr("stroke-width", function(d) { return Math.max(1, d.width); }).on('mouseover', function(d){
-                                    d3.event.preventDefault();
-                                    d3.select(this).style("stroke-opacity", 1).style("stroke", "red")
-                                    d3.select("#"+"rect"+d.source.index).style("opacity", 100)
-                                    d3.select("#"+"rect"+d.target.index).style("opacity", 100)
-                                  })
-                                  .on('mouseout', function(d,i){
-                                    d3.event.preventDefault();
-                                    d3.select(this).style("stroke-opacity", 0.5).style("stroke", "gray")
-                                    d3.select("#"+"rect"+d.source.index).style("opacity", 0.5)
-                                    d3.select("#"+"rect"+d.target.index).style("opacity", 0.5)
-
-                                  });
-
-                              link.append("title")
-                                  .text(function(d) { return d.source.name + " → " + d.target.name + "\n" + format(d.value); })
-                                   .style('font', "20px");
-
-                              node = node
-                                .data(graph.nodes)
-                                .enter().append("g");
-
-                              node.append("rect")
+                            let sankey = d3.sankey()
+                                          .nodeWidth(15)
+                                          .nodePadding(10)
+                                          .extent([[1, 1], [width - 1, height - 6]]);
+                            let link = svg_oceans.append("g")
+                                        .attr("class", "links")
+                                        .attr("stroke", "gray")
+                                        .attr("stroke-opacity", 0.5)
+                                        .selectAll("path");
+                            let node = svg_oceans.append("g")
+                                        .attr("class", "nodes")
+                                        .attr("font-family", "sans-serif")
+                                        .attr("font-size", 10)
+                                        .selectAll("g");
+                            sankey(graph);
+                            link = link
+                                        .data(graph.links)
+                                        .enter().append("path")
+                                          .attr("id", function(d){return "link"+d.source.index+d.target.index})
+                                          .attr("d", d3.sankeyLinkHorizontal())
+                                          .attr("stroke-width", function(d) { return Math.max(1, d.width); }).on('mouseover', function(d){
+                                            d3.event.preventDefault();
+                                            d3.select(this).style("stroke-opacity", 1).style("stroke", "red")
+                                            d3.select("#"+"rect"+d.source.index).style("opacity", 100)
+                                            d3.select("#"+"rect"+d.target.index).style("opacity", 100)
+                                          })
+                                          .on('mouseout', function(d,i){
+                                            d3.event.preventDefault();
+                                            d3.select(this).style("stroke-opacity", 0.5).style("stroke", "gray")
+                                            d3.select("#"+"rect"+d.source.index).style("opacity", 0.5)
+                                            d3.select("#"+"rect"+d.target.index).style("opacity", 0.5)
+                                          });
+                            link.append("title")
+                              .text(function(d) { return d.source.name + " → " + d.target.name + "\n" + format(d.value); })
+                               .style('font', "20px");
+                            node = node
+                                        .data(graph.nodes)
+                                        .enter().append("g");
+                            node.append("rect")
                                   .attr("id", function(d,i){return "rect"+i})
                                   .attr("x", function(d) { return d.x0; })
                                   .attr("y", function(d) { return d.y0; })
@@ -592,14 +567,14 @@ html, body {
                                   .style("opacity", 0.2)
                                   .attr("stroke", "#000")
                                   .on('mouseover', function(d,i){
-                                   d3.event.preventDefault();
+                                    d3.event.preventDefault();
                                     d3.select(this).style("opacity", 100)
                                     for (let k=0; k<graph.links.length; k++){
                                       if (graph.links[k].target.index==d.index ||  graph.links[k].source.index==d.index){
                                         d3.select("#"+"rect"+graph.links[k].source.index).style("opacity", 100)
                                       d3.select("#link"+graph.links[k].source.index+graph.links[k].target.index).style("stroke-opacity", 1).style("stroke", "red")
                                     }
-                                      }
+                                    }
                                   })
                                   .on('mouseout', function(d,i){
                                     d3.event.preventDefault();
@@ -610,8 +585,7 @@ html, body {
                                       d3.select("#link"+graph.links[k].source.index+graph.links[k].target.index).style("stroke-opacity", 0.5).style("stroke", "gray")
                                     }}
                                   })
-
-                              node.append("text")
+                            node.append("text")
                                   .attr("x", function(d) { return d.x0 - 6; })
                                   .attr("y", function(d) { return (d.y1 + d.y0) / 2; })
                                   .attr("dy", "0.35em")
@@ -621,118 +595,115 @@ html, body {
                                   .attr("x", function(d) { return d.x1 + 6; })
                                   .attr("text-anchor", "start")
                                   .style("font-size", "20px")
-
-
-                              node.append("title")
+                            node.append("title")
                                   .text(function(d) { return d.name + "\n" + format(d.value); });
-                            
-
-                         }
-                        }
-                        plot_overview("cd", " t")
-                                    
-                                          popup.append("div")
-                                          .append("a")
-                                          .attr("href",'#')
-                                          .attr("class", "close-thik")
-                                          .on("click", function(){
-                                            d3.event.preventDefault();
-                                            d3.select("#main_panel").remove();
-                                            d3.select("#oceans_button")
-                                                    .select("rect")
-                                                    .attr("fill",defaultColor)
-                                                    .style("fill",defaultColor);
-                                          })
-                                            
-                                      });
+                              }
+                              }
+                            plot_overview("cd", " t")             
+                            popup.append("div")
+                              .append("a")
+                              .attr("href",'#')
+                              .attr("class", "close-thik")
+                              .on("click", function(){
+                                d3.event.preventDefault();
+                                d3.select("#main_panel").remove();
+                                d3.select("#oceans_button")
+                                  .select("rect")
+                                  .attr("fill",defaultColor)
+                                  .style("fill",defaultColor);
+                              })                  
+                            });
 
       button_ocean.append("rect")
-                  .attr("class","buttonRect_ocean")
-                  .attr("width", bWidth_ocean)
-                  .attr("height",bHeight_ocean)
-                  .attr("x",x0_ocean)
-                  .attr("y",y0_ocean)
-                  .attr("rx",5) //rx and ry give the buttons rounded corners
-                  .attr("ry",5)
-                  .attr("fill",defaultColor_ocean)
-                  .style("fill",defaultColor_ocean)
+        .attr("class","buttonRect_ocean")
+        .attr("width", bWidth_ocean)
+        .attr("height",bHeight_ocean)
+        .attr("x",x0_ocean)
+        .attr("y",y0_ocean)
+        .attr("rx",5) //rx and ry give the buttons rounded corners
+        .attr("ry",5)
+        .attr("fill",defaultColor_ocean)
+        .style("fill",defaultColor_ocean)
       button_ocean.append("text")
-            .attr("class","buttonText")
-            .attr("font-family","FontAwesome")
-            .attr("x",x0_ocean + bWidth_ocean/2)
-            .attr("y",y0_ocean + bHeight_ocean/2)
-            .attr("text-anchor","middle")
-            .attr("dominant-baseline","central")
-            .attr("fill","white")
-            .text(function(d) {return d;})
+        .attr("class","buttonText")
+        .attr("font-family","FontAwesome")
+        .attr("x",x0_ocean + bWidth_ocean/2)
+        .attr("y",y0_ocean + bHeight_ocean/2)
+        .attr("text-anchor","middle")
+        .attr("dominant-baseline","central")
+        .attr("fill","white")
+        .text(function(d) {return d;})
 
 
-    let allButtons= svg.append("g").attr("id","allButtons") 
+
+
+
+
+
+
+    //SECTION III- ADD BUTTONS FOR CHANGING WEB PAGES
+      let allButtons= svg.append("g").attr("id","allButtons") 
       let labels= ['Overview','Expeditions','Spreading'];  //here maybe some more creative way
       let defaultColor= "#7777BB"
       let hoverColor= "#0000ff"
       let pressedColor= "#000077"
-
-
       let buttonGroups= allButtons.selectAll("g.button")
-                                        .data(labels)
-                                        .enter()
-                                        .append("g")
-                                        .attr("class","button")
-                                        .attr("id", function(d){return d})
-                                        .style("cursor","pointer")
-                                        .on("click",function(d,i) {
-                                            d3.select(this.parentNode).selectAll("rect").attr("fill",defaultColor)
-                                            d3.select(this).select("rect").attr("fill",pressedColor).style("fill",pressedColor)
-                                            var url = 'map_'+d+'.html'
-                                            // $(location).attr('href', url);
-                                            window.location.assign(url); 
-                                        })
-                                        .on("mouseover", function() {
-                                            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
-                                                d3.select(this)
-                                                    .select("rect")
-                                                    .attr("fill",hoverColor)
-                                                    .style("fill",hoverColor)
-                                            }
-                                        })
-                                        .on("mouseout", function() {
-                                            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
-                                                d3.select(this)
-                                                    .select("rect")
-                                                    .attr("fill",defaultColor)
-                                                    .style("fill",defaultColor);
-                                            }
-                                        })
-      var bWidth= 100; //button width
-      var bHeight= 25; //button height
-      var bSpace= 10; //space between buttons
-      var x0= 20; //x offset
-      var y0= window.innerHeight*0.80+5; //y offset
+                          .data(labels)
+                          .enter()
+                          .append("g")
+                          .attr("class","button")
+                          .attr("id", function(d){return d})
+                          .style("cursor","pointer")
+                          .on("click",function(d,i) {
+                            d3.select(this.parentNode).selectAll("rect").attr("fill",defaultColor)
+                            d3.select(this).select("rect").attr("fill",pressedColor).style("fill",pressedColor)
+                            var url = 'map_'+d+'.html'
+                            window.location.assign(url); 
+                          })
+                          .on("mouseover", function() {
+                            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
+                              d3.select(this)
+                                .select("rect")
+                                .attr("fill",hoverColor)
+                                .style("fill",hoverColor)
+                            }
+                          })
+                          .on("mouseout", function() {
+                            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
+                              d3.select(this)
+                                  .select("rect")
+                                  .attr("fill",defaultColor)
+                                  .style("fill",defaultColor);
+                            }
+                          })
+      let bWidth= 100; //button width
+      let bHeight= 25; //button height
+      let bSpace= 10; //space between buttons
+      let x0= 20; //x offset
+      let y0= window.innerHeight*0.80+5; //y offset
       buttonGroups.append("rect")
-                  .attr("class","buttonRect")
-                  .attr("width",bWidth)
-                  .attr("height",bHeight)
-                  .attr("x",x0)
-                  .attr("y",function(d,i) {return y0+(bHeight+bSpace)*i;})
-                  .attr("rx",5) //rx and ry give the buttons rounded corners
-                  .attr("ry",5)
-                  .attr("fill",function(d,i){
-                    if (i==0) return pressedColor;
-                      return defaultColor})
-                  .style("fill",function(d,i){
-                    if (i==0) return pressedColor;
-                      return defaultColor})
-
+        .attr("class","buttonRect")
+        .attr("width",bWidth)
+        .attr("height",bHeight)
+        .attr("x",x0)
+        .attr("y",function(d,i) {return y0+(bHeight+bSpace)*i;})
+        .attr("rx",5) //rx and ry give the buttons rounded corners
+        .attr("ry",5)
+        .attr("fill",function(d,i){
+          if (i==0) return pressedColor;
+            return defaultColor})
+        .style("fill",function(d,i){
+          if (i==0) return pressedColor;
+            return defaultColor})
       buttonGroups.append("text")
-                  .attr("class","buttonText")
-                  .attr("font-family","FontAwesome")
-                  .attr("x",x0 + bWidth/2)
-                  .attr("y",function(d,i) { return y0+ (bHeight+bSpace)*i + bHeight/2; })
-                  .attr("text-anchor","middle")
-                  .attr("dominant-baseline","central")
-                  .attr("fill","white")
-                  .text(function(d) {return d;})
+        .attr("class","buttonText")
+        .attr("font-family","FontAwesome")
+        .attr("x",x0 + bWidth/2)
+        .attr("y",function(d,i) { return y0+ (bHeight+bSpace)*i + bHeight/2; })
+        .attr("text-anchor","middle")
+        .attr("dominant-baseline","central")
+        .attr("fill","white")
+        .text(function(d) {return d;})
                      
     }
   );  
