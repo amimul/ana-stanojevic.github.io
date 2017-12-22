@@ -1,4 +1,4 @@
-# DATA VISUALIZATION (COM-480) 
+# EPFL: DATA VISUALIZATION (COM-480) 
 ##### Ana Stanojevic, Sergii Shynkaruk, Mohammad Aquil
 
 In this project we wanted to visualize marine plastic [litter, debris, etc.] pollution, all over the world.
