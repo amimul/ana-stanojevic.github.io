@@ -7,6 +7,7 @@ In this project we wanted to visualize marine plastic [litter, debris, etc.] pol
 Use **GOOGLE CHROME** browser to open our web site https://ana-stanojevic.github.io/. 
   - To open process book, click on the **Process book** link.
   - To open vizualization, click on the **Map** link.
+  
       The default page of our vizualization is *Overview* web page. Use three buttons in the left down corner of each page to       swith to wanted visualization. 
       *Overview* page usage: 
         Click button *Oceans' statistics* at the bottom of the page to open chart. Explore Sankey chart by hovering over               different parts of it. Use two buttons on the right side of the chart, to switch between two types of measuring              (weight and nubmer of pieces).
