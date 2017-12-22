@@ -28,7 +28,7 @@ Use **GOOGLE CHROME** browser to open our web site https://ana-stanojevic.github
 - Map_Overview.html - overview visualization
 - Map_expeditions.html - vizualisation of expeditions
 - Map_spreading.html - visualization of spreading
-- File *Process_book.pdf* is the report.
+- File *Process_book.pdf* - final report.
 - index.md - starting web page of our vizualization
 - _config.yml - theme of starting web page of our vizualization
 - Process_book.pdf - report of our project
