@@ -78,6 +78,12 @@ svg {
   stroke-linecap: round;
 }
 
+.circle {
+  fill:red;
+  stroke: white;
+  stroke-width:1;
+}
+
 html, body {
     max-width: 100% !important;
     max-height: 100% !important;
