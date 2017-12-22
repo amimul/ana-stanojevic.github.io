@@ -20,14 +20,14 @@ Use **GOOGLE CHROME** browser to open our web site https://ana-stanojevic.github
     
 
 # Directories
+- data, contains two different data sets which we visualized
 - preprocessing, contains python code which we used for data processing.
 - src, contains some auxiliary code and functions
-- data, contains two different data sets which we visualized
 
 # Files
+- index.md - starting web page of our vizualization
+- _config.yml - theme of starting web page of our vizualization
 - Map_Overview.html - overview visualization
 - Map_expeditions.html - vizualisation of expeditions
 - Map_spreading.html - visualization of spreading
 - Process_book.pdf - final report.
-- index.md - starting web page of our vizualization
-- _config.yml - theme of starting web page of our vizualization
