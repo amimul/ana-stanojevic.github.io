@@ -17,7 +17,8 @@ Use **GOOGLE CHROME** browser to open our web site https://ana-stanojevic.github
         
       **_Spreading_** page usage:
         Click on any of 11 providide points to start animation showing the possible directions in which garbage thrown at that         point, going to spread. During the animation, observe different types of edges, which are corelated with different             probabilities. When the animation is over, click on DEL to delete it from the screen.
-    
+# Special Remark
+If the internet is too slow, map can't be loaded and the error will appear in conosle. Hence, please make sure that you have good internet connection when using the visualization.
 
 # Directories
 - data, contains two different data sets which we visualized
