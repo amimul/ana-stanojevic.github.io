@@ -20,9 +20,9 @@ Use **GOOGLE CHROME** browser to open our web site https://ana-stanojevic.github
     
 
 # Directories
-- preprocessing folder, contains python code which we used for data processing.
-- src folder, contains some auxiliary code and functions
-- data folder, contains two different data sets which we visualized
+- preprocessing, contains python code which we used for data processing.
+- src, contains some auxiliary code and functions
+- data, contains two different data sets which we visualized
 
 # Files
 - Map_Overview.html - overview visualization
