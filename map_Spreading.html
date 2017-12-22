@@ -367,7 +367,7 @@ html, body {
       let defaultColorSpread= "green"
       let hoverColorSpread= "#228B22"
       let pressedColorSpread= "#FFFF00"
-      let deleteColor = "red"
+      let deleteColor = "black"
       let deletehoverColor = "gray"
 
       let PLAY = "\u{25B6}"
@@ -401,7 +401,7 @@ html, body {
                                         .attr("y2", projection([d.child_lng, d.child_lat])[1])
                                       if (j==rows.length-2){
                                         d3.select("#text"+g).text(DELETE).style("font-size", "80px")
-                                        d3.select('#'+tmp_id).select('circle').style("fill", "black")
+                                        d3.select('#'+tmp_id).select('circle').style("fill", deleteColor)
                                       }
                                       tmp.parentElement.appendChild(tmp)
                                       }, parseInt(d.depth)*15 + i *15);
