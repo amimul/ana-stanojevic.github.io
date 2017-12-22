@@ -1,7 +1,7 @@
 # DATA VISUALIZATION (COM-480) 
 ##### Ana Stanojevic, Sergii Shynkaruk, Mohammad Aquil
 
-In this project we did data visualization on Marine Plastic Pollution. 
+In this project we wanted to visualize marine plastic [litter, debris, etc.] pollution allo over the world.
 
 ### Run
 Use **GOOGLE CHROME** browser to open our web site https://ana-stanojevic.github.io/. 
