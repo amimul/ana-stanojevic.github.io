@@ -3,7 +3,7 @@
 
 In this project we wanted to visualize marine plastic [litter, debris, etc.] pollution, all over the world.
 
-### Run
+## Run
 Use **GOOGLE CHROME** browser to open our web site https://ana-stanojevic.github.io/. 
   - To open process book, click on the **Process book** link.
   - To open vizualization, click on the **Map** link.
@@ -17,15 +17,15 @@ Use **GOOGLE CHROME** browser to open our web site https://ana-stanojevic.github
         
       **_Spreading_** page usage:
         Click on any of 11 providide points to start animation showing the possible directions in which garbage thrown at that         point, going to spread. During the animation, observe different types of edges, which are corelated with different             probabilities. When the animation is over, click on DEL to delete it from the screen.
-# Special Remark
+### Special Remark
 If the internet is too slow, map can't be loaded and the error will appear in conosle. Hence, please make sure that you have good internet connection when using the visualization.
 
-# Directories
+## Directories
 - data, contains two different data sets which we visualized
 - preprocessing, contains python code which we used for data processing.
 - src, contains some auxiliary code and functions
 
-# Files
+## Files
 - index.md - starting web page of our vizualization
 - _config.yml - theme of starting web page of our vizualization
 - Map_Overview.html - overview visualization
